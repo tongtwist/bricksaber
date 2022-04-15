@@ -83,7 +83,6 @@ export class App {
     const appParam = gui.addFolder("App properties");
     appParam.open();
 
-    window.addEventListener("resize", res.onWindowResize.bind(res));
     document.body.appendChild(renderer.domElement);
     document.body.appendChild(stats.dom);
 

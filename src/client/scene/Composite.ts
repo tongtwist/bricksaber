@@ -1,6 +1,6 @@
 import { Object3D } from "three";
 
-interface IChild {
+export interface IChild {
   threeObject?: Object3D;
   renderComputation(time: number): void;
 }

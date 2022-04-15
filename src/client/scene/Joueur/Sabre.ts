@@ -5,25 +5,16 @@ export class Sabre extends CompositeAbstract {
   public constructor() {
     super(
       new THREE.Mesh(
-        new THREE.CylinderGeometry(1, 1, 20, 32),
+        new THREE.CylinderGeometry(0.5, 0.5, 20, 32),
         new THREE.MeshBasicMaterial({
-          color: 0xffff00,
+          color: 0xea80fc,
           wireframe: true,
         })
       )
     );
+    this.threeObject.position.x = 0.5
   }
 
   public renderComputation(time: number): void {}
 }
 
-// camera.position.z = 20
-
-// function animate() {
-//   cylinder.rotation.x += 0.01
-//   cylinder.rotation.y += 0.01
-//   renderer.render(scene, camera)
-//   requestAnimationFrame(animate)
-// }
-
-// animate()
