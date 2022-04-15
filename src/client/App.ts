@@ -19,7 +19,7 @@ export class App {
     private readonly _camera: THREE.PerspectiveCamera,
     private readonly _gui: GUI,
     private readonly _stats: Stats,
-    private readonly _orbitControls: OrbitControls
+    private readonly _orbitControls: OrbitControls,
   ) {}
 
   get width(): number {
