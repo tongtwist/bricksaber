@@ -18,9 +18,9 @@ export class App {
     private readonly _gui: GUI,
     private readonly _stats: Stats,
     private readonly _orbitControls: OrbitControls,
-    private readonly _cylinder : THREE.Mesh,
+   // private readonly _cylinder : THREE.Mesh,
   ) {
-    this._scene.add( this._cylinder)
+    //this._scene.add( this._cylinder)
   }
 
   get width(): number {
@@ -69,18 +69,7 @@ export class App {
     const stats = Stats();
     const orbitControls = new OrbitControls(camera, renderer.domElement);
 
-    //cylindre 0xffff00
-    const geometry = new THREE.CylinderGeometry( 1, 1, 20, 32 );
-    const material = new THREE.MeshBasicMaterial({
-      color: 0xffff00,
-      wireframe: true
-    });
-    const cylinder = new THREE.Mesh( geometry, material );
-    scene.add( cylinder );
-    camera.position.z = 20
-
-
-    const res = new App(renderer, scene, camera, gui, stats, orbitControls,cylinder);
+    const res = new App(renderer, scene, camera, gui, stats, orbitControls);
     res.onWindowResize();
     const appParam = gui.addFolder("App properties");
     appParam.open();

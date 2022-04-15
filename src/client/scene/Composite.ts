@@ -1,10 +1,10 @@
 import { Object3D } from "three";
 
-interface IChild {
+export interface IChild {
     renderComputation(time: number): void
 }
 
-abstract class CompositeAbstract implements IChild {
+export abstract class CompositeAbstract implements IChild {
     protected parent!: IChild;
     protected children!: IChild[];
     protected threeObject: Object3D
@@ -30,4 +30,3 @@ abstract class CompositeAbstract implements IChild {
 }
 
 
-export {CompositeAbstract}
