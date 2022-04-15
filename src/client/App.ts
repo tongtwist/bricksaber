@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { GUI } from "dat.gui";
 import Stats from "three/examples/jsm/libs/stats.module";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
+
 
 export class App {
   speedFactor = 1;
@@ -11,8 +13,12 @@ export class App {
     private readonly _scene: THREE.Scene,
     private readonly _camera: THREE.PerspectiveCamera,
     private readonly _gui: GUI,
-    private readonly _stats: Stats
-  ) {}
+    private readonly _stats: Stats,
+	private readonly _orbitControls : OrbitControls,
+	private readonly _cube : THREE.Mesh,
+  ) {
+	this._scene.add(this._cube)
+  }
 
   run() {
     this.frameAnimation(0);
@@ -33,9 +39,18 @@ export class App {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(55, 800 / 600, 0.1, 100);
     const stats = Stats();
+	const orbitControls = new OrbitControls(camera , renderer.domElement)
+	const cube = new THREE.Mesh(
+		new THREE.BoxGeometry(),
+		new THREE.MeshBasicMaterial({
+			color: 0xff0000,
+			wireframe: true,
+		})
+    )
+	camera.position.z = 2
 
     const gui = new GUI();
-    const res = new App(renderer, scene, camera, gui, stats);
+    const res = new App(renderer, scene, camera, gui, stats, orbitControls, cube);
 
     document.body.appendChild(renderer.domElement);
     document.body.appendChild(stats.dom);
@@ -45,3 +60,5 @@ export class App {
     return res;
   }
 }
+
+
