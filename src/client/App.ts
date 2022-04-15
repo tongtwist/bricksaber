@@ -14,11 +14,8 @@ export class App {
     private readonly _camera: THREE.PerspectiveCamera,
     private readonly _gui: GUI,
     private readonly _stats: Stats,
-	private readonly _orbitControls : OrbitControls,
-	private readonly _cube : THREE.Mesh,
-  ) {
-	this._scene.add(this._cube)
-  }
+	  private readonly _orbitControls : OrbitControls,
+  ) {}
 
   run() {
     this.frameAnimation(0);
@@ -39,18 +36,11 @@ export class App {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(55, 800 / 600, 0.1, 100);
     const stats = Stats();
-	const orbitControls = new OrbitControls(camera , renderer.domElement)
-	const cube = new THREE.Mesh(
-		new THREE.BoxGeometry(),
-		new THREE.MeshBasicMaterial({
-			color: 0xff0000,
-			wireframe: true,
-		})
-    )
-	camera.position.z = 2
+	  const orbitControls = new OrbitControls(camera , renderer.domElement)
+	 
 
     const gui = new GUI();
-    const res = new App(renderer, scene, camera, gui, stats, orbitControls, cube);
+    const res = new App(renderer, scene, camera, gui, stats, orbitControls);
 
     document.body.appendChild(renderer.domElement);
     document.body.appendChild(stats.dom);
