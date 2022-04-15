@@ -34,6 +34,8 @@ export class App {
 		const gui = new GUI()
 		const res = new App(renderer, scene, camera, gui)
 
+		document.body.appendChild(renderer.domElement)
+
 		const appParam = gui.addFolder("App properties")
 		appParam.open()
 		
