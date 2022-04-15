@@ -5,6 +5,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import AnimationLoop from "./AnimationLoop";
 import Scene from "./scene/Scene";
 import Cube from "./objects/Cube";
+import Bomb from "./objects/Bomb";
+import Grid from "./objects/Grid";
 
 export class App {
   speedFactor = 1;
@@ -15,7 +17,7 @@ export class App {
 
   private constructor(
     private readonly _renderer: THREE.Renderer,
-    private readonly _scene: THREE.Scene,
+    private readonly _scene: Scene,
     private readonly _camera: THREE.PerspectiveCamera,
     private readonly _gui: GUI,
     private readonly _stats: Stats,
@@ -64,12 +66,21 @@ export class App {
   static create(): App {
     const scene = new Scene();
     const cube = new Cube("Blue");
-    scene.add(cube);
+    // const cube2 = new Cube("Red");
+    // scene.add(cube2);
+    // scene.add(cube);
+
+    const bomb = new Bomb();
+    const grid = new Grid();
+    bomb.threeObject.position.x = 4;
+    grid.add(bomb);
+    grid.add(cube);
+    scene.add(grid);
 
     // const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(55, App._ratio(), 0.1, 100);
     camera.position.z = 10;
-    
+
     const renderer = new THREE.WebGLRenderer();
     const helper = new THREE.AxesHelper(1);
     scene.threeObject.add(helper);
@@ -77,14 +88,7 @@ export class App {
     const gui = new GUI();
     const stats = Stats();
     const orbitControls = new OrbitControls(camera, renderer.domElement);
-    const res = new App(
-      renderer,
-      scene.threeObject as THREE.Scene,
-      camera,
-      gui,
-      stats,
-      orbitControls
-    );
+    const res = new App(renderer, scene, camera, gui, stats, orbitControls);
     res.onWindowResize();
     const appParam = gui.addFolder("App properties");
     appParam.open();
@@ -100,7 +104,7 @@ export class App {
     this._camera.aspect = App._ratio(this);
     this._camera.updateProjectionMatrix();
     this._renderer.setSize(this.width, this.heigth);
-    this._renderer.render(this._scene, this._camera);
+    this._renderer.render(this._scene.threeObject, this._camera);
   }
 
   private static _ratio(app?: App): number {

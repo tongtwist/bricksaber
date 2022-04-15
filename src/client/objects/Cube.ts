@@ -16,6 +16,7 @@ export default class Cube extends CompositeAbstract implements Obstacle {
 
   renderComputation(time: number): void {
     // Do nothing
+    this.threeObject.rotation.x += 0.01;
   }
 
   explode() {}

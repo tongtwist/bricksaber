@@ -10,5 +10,7 @@ export default class Scene extends CompositeAbstract {
     return super.threeObject as THREE.Scene;
   }
 
-  public renderComputation(time: number): void {}
+  public renderComputation(time: number): void {
+    this.renderChildrenComputation(time);
+  }
 }

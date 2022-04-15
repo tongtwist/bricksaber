@@ -31,6 +31,10 @@ abstract class CompositeAbstract implements IChild {
   }
 
   public abstract renderComputation(time: number): void;
+
+  protected renderChildrenComputation(time: number): void {
+    this.children.forEach((child) => child.renderComputation(time));
+  }
 }
 
 export { CompositeAbstract };

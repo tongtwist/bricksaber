@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
+import Scene from "./scene/Scene";
 
 export default class AnimationLoop {
   private readonly _clock: THREE.Clock;
@@ -8,7 +9,7 @@ export default class AnimationLoop {
   constructor(
     private readonly _renderer: THREE.Renderer,
     private readonly _stats: Stats,
-    private readonly _scene: THREE.Scene,
+    private readonly _scene: Scene,
     private readonly _camera: THREE.PerspectiveCamera
   ) {
     this._clock = new THREE.Clock();
@@ -25,7 +26,7 @@ export default class AnimationLoop {
   }
 
   private _render() {
-    this._renderer.render(this._scene, this._camera);
+    this._renderer.render(this._scene.threeObject, this._camera);
   }
 
   private _animate() {
@@ -34,7 +35,7 @@ export default class AnimationLoop {
 
     const dt = this._clock.getDelta();
 
-    // this._scene.animate(dt);
+    this._scene.renderComputation(dt);
     this._stats.update();
   }
 }
