@@ -59,6 +59,7 @@ export class App {
 
     const gui = new GUI();
     const res = new App(renderer, scene, camera, gui);
+    res.onWindowResize();
 
     document.body.appendChild(renderer.domElement);
 
@@ -71,9 +72,10 @@ export class App {
   }
 
   private onWindowResize() {
-    this._camera.aspect = App._ratio();
+    this._camera.aspect = App._ratio(this);
     this._camera.updateProjectionMatrix();
     this._renderer.setSize(this.width, this.heigth);
+    this._renderer.render(this._scene, this._camera);
   }
 
   private static _ratio(app?: App): number {
