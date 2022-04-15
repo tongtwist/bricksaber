@@ -39,7 +39,6 @@ export default class AnimationLoop {
     this._render();
 
     const dt = this._clock.getDelta();
-    console.log(dt)
 
     // this._scene.animate(dt);
   }
