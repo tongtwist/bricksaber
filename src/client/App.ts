@@ -4,7 +4,10 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import AnimationLoop from "./AnimationLoop";
 import Scene from "./scene/Scene";
-import Cube from "./objects/Cube";
+import Mesh from "./scene/Mesh";
+import PerspectiveCamera from "./scene/PerspectiveCamera";
+import { Camera } from "three";
+
 
 export class App {
   speedFactor = 1;
@@ -62,23 +65,34 @@ export class App {
 
   static create(): App {
     const scene = new Scene();
-    const cube = new Cube();
-    scene.add(cube);
 
-    // const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(55, App._ratio(), 0.1, 100);
+    const camera = new PerspectiveCamera(55, App._ratio(), 0.1, 100);
+    scene.add(camera);
+
     const renderer = new THREE.WebGLRenderer();
+
+    const orbitControls = new OrbitControls(camera.threeObject as Camera, renderer.domElement);
+    
+    const platform = new Mesh(
+      new THREE.PlaneGeometry(10, 50),
+      new THREE.MeshBasicMaterial({ color: 0x7f7f7f, side: THREE.DoubleSide })
+    );
+    platform.threeObject.rotation.x = -Math.PI * 0.5;
+    platform.threeObject.position.y = -10;
+    scene.add(platform);
+
+    const platform2 = new Mesh(
+      new THREE.PlaneGeometry(20, window.innerHeight),
+      new THREE.MeshBasicMaterial({ color: 0xff00ff, side: THREE.DoubleSide,transparent:true })
+    );
+    platform2.threeObject.rotation.x = -Math.PI * 0.5;
+    platform2.threeObject.position.y = -10;
+    scene.add(platform2);
+
     const gui = new GUI();
     const stats = Stats();
-    const orbitControls = new OrbitControls(camera, renderer.domElement);
-    const res = new App(
-      renderer,
-      scene.threeObject as THREE.Scene,
-      camera,
-      gui,
-      stats,
-      orbitControls
-    );
+    const res = new App(renderer, scene.threeObject as THREE.Scene, camera.threeObject as THREE.PerspectiveCamera, gui, stats, orbitControls);
+
     res.onWindowResize();
     const appParam = gui.addFolder("App properties");
     appParam.open();
