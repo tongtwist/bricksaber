@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import { GUI } from "dat.gui";
 import Stats from "three/examples/jsm/libs/stats.module";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import AnimationLoop from "./AnimationLoop";
 
 export class App {
   speedFactor = 1;
@@ -11,12 +12,12 @@ export class App {
   private _canvaRatio: number = 0;
 
   private constructor(
-    private readonly _renderer: THREE.WebGLRenderer,
+    private readonly _renderer: THREE.Renderer,
     private readonly _scene: THREE.Scene,
     private readonly _camera: THREE.PerspectiveCamera,
     private readonly _gui: GUI,
     private readonly _stats: Stats,
-    private readonly _orbitControls: OrbitControls,
+    private readonly _orbitControls: OrbitControls
   ) {}
 
   get width(): number {
@@ -44,38 +45,34 @@ export class App {
   }
 
   run() {
-    this.frameAnimation(0);
-  }
+    const animationLoop = new AnimationLoop(
+      this._renderer,
+      this._stats,
+      this._scene,
+      this._camera
+    );
+    animationLoop.start();
 
-  render() {
-    this._renderer.render(this._scene, this._camera);
-  }
-
-  frameAnimation(t: number) {
-    requestAnimationFrame(this.frameAnimation.bind(this));
-    this.render();
-    this._stats.update();
+    // setTimeout(() => {
+    // 	animationLoop.stop()
+    // }, 3000);
   }
 
   static create(): App {
-    const renderer = new THREE.WebGLRenderer();
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(55, App._ratio(), 0.1, 100);
-    
-    const stats = Stats();
-    const orbitControls = new OrbitControls(camera , renderer.domElement);
-
+    const renderer = new THREE.WebGLRenderer();
     const gui = new GUI();
+    const stats = Stats();
+    const orbitControls = new OrbitControls(camera, renderer.domElement);
     const res = new App(renderer, scene, camera, gui, stats, orbitControls);
     res.onWindowResize();
-
-    document.body.appendChild(renderer.domElement);
-    document.body.appendChild(stats.dom);
-
     const appParam = gui.addFolder("App properties");
     appParam.open();
 
     window.addEventListener("resize", res.onWindowResize.bind(res));
+    document.body.appendChild(renderer.domElement);
+    document.body.appendChild(stats.dom);
 
     return res;
   }
