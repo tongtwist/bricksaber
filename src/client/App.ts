@@ -14,7 +14,7 @@ export class App {
     private readonly _camera: THREE.PerspectiveCamera,
     private readonly _gui: GUI,
     private readonly _stats: Stats,
-	  private readonly _orbitControls : OrbitControls,
+    private readonly _orbitControls: OrbitControls,
   ) {}
 
   run() {
@@ -36,8 +36,8 @@ export class App {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(55, 800 / 600, 0.1, 100);
     const stats = Stats();
-	  const orbitControls = new OrbitControls(camera , renderer.domElement)
-	 
+    const orbitControls = new OrbitControls(camera , renderer.domElement)
+    
 
     const gui = new GUI();
     const res = new App(renderer, scene, camera, gui, stats, orbitControls);
