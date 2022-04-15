@@ -1,14 +1,15 @@
 import { CompositeAbstract } from "./Composite";
-import * as THREE from "three"
+import * as THREE from "three";
+import { Joueur } from "./Joueur/index";
 
-class Scene extends CompositeAbstract {
-
+export default class Scene extends CompositeAbstract {
   public constructor() {
     super(new THREE.Scene());
+
+    const joueur = new Joueur()
+
+    this.add(joueur)
   }
 
-  public renderComputation(time: number): void {
-
-  }
-  
+  public renderComputation(time: number): void {}
 }

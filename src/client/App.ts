@@ -3,6 +3,8 @@ import { GUI } from "dat.gui";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import AnimationLoop from "./AnimationLoop";
+import Scene from "./scene/Scene";
+import Cube from "./objects/Cube";
 
 export class App {
   speedFactor = 1;
@@ -18,10 +20,7 @@ export class App {
     private readonly _gui: GUI,
     private readonly _stats: Stats,
     private readonly _orbitControls: OrbitControls,
-    private readonly _cylinder : THREE.Mesh,
-  ) {
-    this._scene.add( this._cylinder)
-  }
+  ) {}
 
   get width(): number {
     return this._width;
@@ -62,30 +61,28 @@ export class App {
   }
 
   static create(): App {
-    const scene = new THREE.Scene();
+    const scene = new Scene();
+    const cube = new Cube();
+    scene.add(cube);
+
+    // const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(55, App._ratio(), 0.1, 100);
     const renderer = new THREE.WebGLRenderer();
     const gui = new GUI();
     const stats = Stats();
     const orbitControls = new OrbitControls(camera, renderer.domElement);
-
-    //cylindre 0xffff00
-    const geometry = new THREE.CylinderGeometry( 1, 1, 20, 32 );
-    const material = new THREE.MeshBasicMaterial({
-      color: 0xffff00,
-      wireframe: true
-    });
-    const cylinder = new THREE.Mesh( geometry, material );
-    scene.add( cylinder );
-    camera.position.z = 20
-
-
-    const res = new App(renderer, scene, camera, gui, stats, orbitControls,cylinder);
+    const res = new App(
+      renderer,
+      scene.threeObject as THREE.Scene,
+      camera,
+      gui,
+      stats,
+      orbitControls
+    );
     res.onWindowResize();
     const appParam = gui.addFolder("App properties");
     appParam.open();
 
-    window.addEventListener("resize", res.onWindowResize.bind(res));
     document.body.appendChild(renderer.domElement);
     document.body.appendChild(stats.dom);
 

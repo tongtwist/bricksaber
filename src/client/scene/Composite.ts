@@ -1,33 +1,36 @@
 import { Object3D } from "three";
 
-interface IChild {
-    renderComputation(time: number): void
+export interface IChild {
+  threeObject?: Object3D;
+  renderComputation(time: number): void;
 }
 
 abstract class CompositeAbstract implements IChild {
-    protected parent!: IChild;
-    protected children!: IChild[];
-    protected threeObject: Object3D
+  protected parent!: IChild;
+  protected children: IChild[] = [];
 
-    protected constructor(threeObject: Object3D) {
-        this.threeObject = threeObject
+  protected constructor(private _threeObject: Object3D) {}
+
+  get threeObject(): Object3D {
+    return this._threeObject;
+  }
+
+  public setParent(parent: IChild) {
+    this.parent = parent;
+  }
+
+  public getParent(): IChild {
+    return this.parent;
+  }
+
+  public add(child: IChild): void {
+    this.children.push(child);
+    if (child.threeObject) {
+      this.threeObject.add(child.threeObject);
     }
+  }
 
-    public setParent(parent: IChild) {
-        this.parent = parent;
-    }
-
-    public getParent(): IChild {
-        return this.parent;
-    }
-
-    public add(child: IChild): void {
-        this.children.push(child)
-    }
-
-    public abstract renderComputation(time: number): void
-
+  public abstract renderComputation(time: number): void;
 }
 
-
-export {CompositeAbstract}
+export { CompositeAbstract };
