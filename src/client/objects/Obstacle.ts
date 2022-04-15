@@ -1,3 +1,5 @@
+import { HitEvent } from "../types";
+
 export default interface IObstacle {
-  handleHit(): void;
+  handleHit(hit: HitEvent): void;
 }

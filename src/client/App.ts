@@ -53,6 +53,7 @@ export class App {
       this._scene,
       this._camera
     );
+
     animationLoop.start();
 
     // setTimeout(() => {
@@ -62,12 +63,17 @@ export class App {
 
   static create(): App {
     const scene = new Scene();
-    const cube = new Cube();
+    const cube = new Cube("Blue");
     scene.add(cube);
 
     // const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(55, App._ratio(), 0.1, 100);
+    camera.position.z = 10;
+    
     const renderer = new THREE.WebGLRenderer();
+    const helper = new THREE.AxesHelper(1);
+    scene.threeObject.add(helper);
+
     const gui = new GUI();
     const stats = Stats();
     const orbitControls = new OrbitControls(camera, renderer.domElement);

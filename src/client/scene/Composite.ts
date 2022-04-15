@@ -24,6 +24,7 @@ abstract class CompositeAbstract implements IChild {
   }
 
   public add(child: IChild): void {
+    console.log(child);
     this.children.push(child);
     if (child.threeObject) {
       this.threeObject.add(child.threeObject);
