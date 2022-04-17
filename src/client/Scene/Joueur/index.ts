@@ -1,8 +1,8 @@
-import * as THREE from "three";
-import { CompositeAbstract } from "../Composite";
-import { Sabre } from "./Sabre";
+import * as THREE from "three"
+import { SceneNode } from "../../Templates"
+import { Sabre } from "./Sabre"
 
-export class Joueur extends CompositeAbstract {
+export class Joueur extends SceneNode<THREE.Mesh> {
 
     public constructor(){
         super(new THREE.Mesh(
@@ -11,7 +11,7 @@ export class Joueur extends CompositeAbstract {
               color:  0xe91e63,
               wireframe: true,
             })
-        ));
+        ))
         const sabre = new Sabre()
         this.add(sabre)
     }

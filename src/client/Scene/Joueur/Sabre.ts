@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import {IChild, CompositeAbstract} from "../Composite";
+import { SceneNode } from "../../Templates"
 
-export class Sabre extends CompositeAbstract {
+export class Sabre extends SceneNode<THREE.Mesh> {
   public constructor() {
     super(
       new THREE.Mesh(
@@ -11,8 +11,8 @@ export class Sabre extends CompositeAbstract {
           wireframe: true,
         })
       )
-    );
-    this.threeObject.position.x = 0.5
+    )
+    this._obj3D.position.x = 0.5
   }
 
   public renderComputation(time: number): void {}
