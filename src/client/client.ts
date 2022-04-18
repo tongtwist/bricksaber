@@ -1,4 +1,4 @@
 import { App } from "./App"
 
-const app = App.create()
+const app = App.create(document.body)
 app.run()

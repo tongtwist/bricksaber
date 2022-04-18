@@ -1,71 +1,82 @@
-import * as THREE from "three";
-import { GUI } from "dat.gui";
-import Stats from "three/examples/jsm/libs/stats.module";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import AnimationLoop from "./AnimationLoop";
-import Scene from "./scene/Scene";
-import Cube from "./objects/Cube";
-import Bomb from "./objects/Bomb";
-import Grid from "./objects/Grid";
+import { WebGLRenderer } from "three"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import Stats from "three/examples/jsm/libs/stats.module"
+import { GUI } from "dat.gui"
+
+import AnimationLoop from "./AnimationLoop"
+import Scene from "./Scene"
+import {
+  IPropsWithGUIOptions,
+  IWithGUI,
+  WithGUI
+} from "./Components"
+
+
+interface IAppProps extends IPropsWithGUIOptions {
+  readonly scene: Scene
+  readonly animationLoop: AnimationLoop
+}
 
 export class App {
-  speedFactor = 1;
-  lightColor = 0xffffff;
-  private _width: number = 0;
-  private _heigth: number = 0;
-  private _canvaRatio: number = 0;
+  private readonly _scene: Scene
+  private readonly _animationLoop: AnimationLoop
+  private readonly _gui: IWithGUI
 
-  private constructor(
-    private readonly _renderer: THREE.Renderer,
-    private readonly _scene: Scene,
-    private readonly _camera: THREE.PerspectiveCamera,
-    private readonly _gui: GUI,
-    private readonly _stats: Stats,
-    private readonly _orbitControls: OrbitControls
-  ) {}
-
-  get width(): number {
-    return this._width;
+  private constructor (props: IAppProps) {
+    this._scene = props.scene
+    this._animationLoop = props.animationLoop
+    this._gui = WithGUI.createAndApply(this, props)
   }
 
-  set width(newValue: number) {
-    this._width = Math.max(newValue, 0);
-  }
-
-  get heigth(): number {
-    return this._heigth;
-  }
-
-  set heigth(newValue: number) {
-    this._heigth = Math.max(newValue, 1);
-  }
-
-  get canvaRatio(): number {
-    return this._canvaRatio;
-  }
-
-  set canvaRatio(newValue: number) {
-    this._canvaRatio = newValue;
+  private _onWindowResize() {
+    this._scene.camera.setAspect(window.innerWidth, window.innerHeight)
+    this._animationLoop.renderer.setSize(window.innerWidth, window.innerHeight)
+    if (!this._animationLoop.started) {
+      this._animationLoop.render()
+    }
   }
 
   run() {
-    const animationLoop = new AnimationLoop(
-      this._renderer,
-      this._stats,
-      this._scene,
-      this._camera
-    );
-
-    animationLoop.start();
-
-    // setTimeout(() => {
-    // 	animationLoop.stop()
-    // }, 3000);
+    this._animationLoop.start()
   }
 
-  static create(): App {
-    const scene = new Scene();
-    const cube = new Cube("Blue");
+  static create(container: HTMLElement): App {
+    const renderer = new WebGLRenderer()
+    renderer.setPixelRatio(Math.min(renderer.getPixelRatio(), 2))
+		renderer.setSize(window.innerWidth, window.innerHeight)
+		renderer.shadowMap.enabled = true
+
+    const gui = new GUI()
+
+    const scene = new Scene({
+      name: "Scene",
+      viewport: {
+				initialWidth: window.innerWidth,
+				initialHeight: Math.max(window.innerHeight, 1)
+			},
+			gui: { container: gui }
+    })
+
+    const stats = Stats()
+
+    new OrbitControls(scene.camera.obj3D, renderer.domElement)
+
+    const animationLoop = AnimationLoop.create(renderer, scene, gui, stats)
+
+    const res = new App({ name: "App", scene, animationLoop, gui: { container: gui } })
+
+    container.appendChild(renderer.domElement)
+    container.appendChild(stats.dom)
+
+    window.addEventListener("resize", res._onWindowResize.bind(res), false)
+
+    return res
+  }
+}
+
+
+
+/*const cube = new Cube("Blue");
     // const cube2 = new Cube("Red");
     // scene.add(cube2);
     // scene.add(cube);
@@ -75,46 +86,4 @@ export class App {
     bomb.threeObject.position.x = 4;
     grid.add(bomb);
     grid.add(cube);
-    scene.add(grid);
-
-    // const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(55, App._ratio(), 0.1, 100);
-    camera.position.z = 10;
-
-    const renderer = new THREE.WebGLRenderer();
-    const helper = new THREE.AxesHelper(1);
-    scene.threeObject.add(helper);
-
-    const gui = new GUI();
-    const stats = Stats();
-    const orbitControls = new OrbitControls(camera, renderer.domElement);
-    const res = new App(renderer, scene, camera, gui, stats, orbitControls);
-    res.onWindowResize();
-    const appParam = gui.addFolder("App properties");
-    appParam.open();
-
-    window.addEventListener("resize", res.onWindowResize.bind(res));
-    document.body.appendChild(renderer.domElement);
-    document.body.appendChild(stats.dom);
-
-    return res;
-  }
-
-  private onWindowResize() {
-    this._camera.aspect = App._ratio(this);
-    this._camera.updateProjectionMatrix();
-    this._renderer.setSize(this.width, this.heigth);
-    this._renderer.render(this._scene.threeObject, this._camera);
-  }
-
-  private static _ratio(app?: App): number {
-    const [w, h] = [window.innerWidth, window.innerHeight];
-    const ratio = w / h;
-    if (app) {
-      app.width = w;
-      app.heigth = h;
-      app.canvaRatio = ratio;
-    }
-    return ratio;
-  }
-}
+    scene.add(grid);*/
