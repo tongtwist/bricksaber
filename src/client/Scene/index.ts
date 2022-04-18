@@ -9,6 +9,7 @@ import { SceneNode } from "../Templates"
 import Camera from "./Camera"
 import Axes from "./Axes"
 import Grid from "./Grid"
+import Decor from "./Decor"
 
 
 export interface ISceneProps extends IPropsWithGUIOptions {
@@ -25,6 +26,7 @@ export default class Scene extends SceneNode<THREE.Scene> {
 	readonly camera: Camera
 	readonly grid: Grid
 	readonly axes: Axes
+  readonly decor: Decor
 
 	constructor (props: ISceneProps) {
 		super(new THREE.Scene())
@@ -38,7 +40,10 @@ export default class Scene extends SceneNode<THREE.Scene> {
 		})
 		this.grid = new Grid(this._gui.container)
 		this.axes = new Axes(this._gui.container)
-		this.add(this.grid)
+    this.decor = new Decor(this._gui.container)
+
+		this.add(this.decor)
+    this.add(this.grid)
 		this.add(this.axes)
 	}
 
