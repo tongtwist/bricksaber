@@ -3,9 +3,9 @@ import { GUI } from "dat.gui";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import AnimationLoop from "./AnimationLoop";
-import Scene from "./scene/Scene";
-import Mesh from "./scene/Mesh";
-import PerspectiveCamera from "./scene/PerspectiveCamera";
+import Scene from "./Scene/Scene";
+import Mesh from "./Scene/Mesh";
+import PerspectiveCamera from "./Scene/PerspectiveCamera";
 import { Camera } from "three";
 
 

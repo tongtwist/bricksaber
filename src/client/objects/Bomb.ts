@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { CompositeAbstract } from "../scene/Composite";
+import { CompositeAbstract } from "../Scene/Composite";
 import Obstacle from "./Obstacle";
 
 export default class Bomb extends CompositeAbstract implements Obstacle {
