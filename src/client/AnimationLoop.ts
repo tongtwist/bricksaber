@@ -25,18 +25,18 @@ interface IAnimationLoopProps extends IPropsWithGUIOptions<IAnimationLoopGUIProp
 }
 
 export default class AnimationLoop {
-  private readonly _renderer: THREE.Renderer
+	private readonly _renderer: THREE.Renderer
 	private readonly _scene: Scene
 	private readonly _stats: Stats
 	private readonly _gui?: IWithGUI
-  private readonly _clock: THREE.Clock
-  private _timeAccelerator: number = 1
+	private readonly _clock: THREE.Clock
+	private _timeAccelerator: number = 1
 	private _started: boolean = false
 	private _requestAnimationFrameID: number = 0
-  private _oldTime: number = 0
+	private _oldTime: number = 0
 
-  constructor(props: IAnimationLoopProps) {
-    this._renderer = props.renderer
+	constructor(props: IAnimationLoopProps) {
+		this._renderer = props.renderer
 		this._scene = props.scene
 		this._stats = props.stats
 		this._gui = WithGUI.createAndApply(this, props, {
@@ -44,10 +44,10 @@ export default class AnimationLoop {
 				type: "number", min: 0, max: 10, step: 0.1, label: "Time Accelerator"
 			}
 		})
-    this._clock = new THREE.Clock()
-  }
+		this._clock = new THREE.Clock()
+	}
 
-  get renderer (): THREE.Renderer { return this._renderer }
+	get renderer (): THREE.Renderer { return this._renderer }
 	get timeAccelerator (): number { return this._timeAccelerator }
 	set timeAccelerator (v: number) { this._timeAccelerator = Math.max(0, v) }
 	get started () { return this._started }

@@ -8,7 +8,9 @@ import Scene from "./Scene"
 import {
   IPropsWithGUIOptions,
   IWithGUI,
-  WithGUI
+  WithGUI,
+  IAudioPlayer,
+  AudioPlayer
 } from "./Components"
 
 
@@ -40,7 +42,10 @@ export class App {
     this._animationLoop.start()
   }
 
-  static create(container: HTMLElement): App {
+  static create(
+    container: HTMLElement
+  ): App {
+    const audioPlayer: IAudioPlayer = AudioPlayer.create()
     const renderer = new WebGLRenderer()
     renderer.setPixelRatio(Math.min(renderer.getPixelRatio(), 2))
 		renderer.setSize(window.innerWidth, window.innerHeight)
