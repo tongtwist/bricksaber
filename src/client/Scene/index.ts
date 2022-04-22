@@ -9,6 +9,7 @@ import { SceneNode } from "../Templates"
 import Camera from "./Camera"
 import Axes from "./Axes"
 import Grid from "./Grid"
+import { Joueur } from "./Joueur/index"
 
 
 export interface ISceneProps extends IPropsWithGUIOptions {
@@ -25,6 +26,7 @@ export default class Scene extends SceneNode<THREE.Scene> {
 	readonly camera: Camera
 	readonly grid: Grid
 	readonly axes: Axes
+	readonly joueur: Joueur
 
 	constructor (props: ISceneProps) {
 		super(new THREE.Scene())
@@ -38,8 +40,18 @@ export default class Scene extends SceneNode<THREE.Scene> {
 		})
 		this.grid = new Grid(this._gui.container)
 		this.axes = new Axes(this._gui.container)
+		this.joueur = new Joueur({
+			gui:{ 
+				container: this._gui.container,
+			},
+			name: "joueur"
+		});
+		this.joueur.obj3D.position.y = 1.25
+
+		this.joueur.init()
 		this.add(this.grid)
 		this.add(this.axes)
+		this.add(this.joueur)
 	}
 
 	renderingComputation(dt: number) {
