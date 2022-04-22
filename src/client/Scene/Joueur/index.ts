@@ -64,17 +64,28 @@ export class Joueur extends SceneNode<THREE.Mesh> {
     const body = new THREE.Mesh(geometry, this.material);
     this.obj3D.add(body);
   }
+  createHarms() {
+    for (let i = 0; i < 2; i++) {
+      const material = new THREE.MeshLambertMaterial({color: 0xea80fc});
+      const geometry = new THREE.BoxGeometry(0.25, 1, 0.25);
+      const arm = new THREE.Mesh(geometry, material);
+      const m = i % 2 === 0 ? 1 : -1;
+
+      this.obj3D.add(arm);
+
+      arm.position.x = m * 0.8;
+      arm.position.y = 0.1;
+      arm.rotation.z = this.degreesToRadians(30 * m)
+    }
+  }
 
   init() {
     this.createHead();
     this.createBody();
+    this.createHarms();
   }
 
-    degreesToRadians = (degrees: number) => {
+  degreesToRadians = (degrees: number) => {
     return degrees * (Math.PI / 180);
   };
-
 }
-
-
-
