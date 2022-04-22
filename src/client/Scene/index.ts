@@ -8,6 +8,7 @@ import {
   IBeatmapBlock,
   IBeatmapBomb,
   IBeatmapWall,
+  IAudioPlayer,
 } from "../Components";
 import { Bomb, Cube, LaneGrid, SceneNode } from "../Templates";
 import Camera from "./Camera";
@@ -22,11 +23,13 @@ export interface ISceneProps extends IPropsWithGUIOptions {
     readonly initialWidth: number;
     readonly initialHeight: number;
   };
+  audioPlayer: IAudioPlayer;
 }
 
 export default class Scene extends SceneNode<THREE.Scene> {
   private readonly _textureLoader: THREE.TextureLoader;
   private readonly _gui: IWithGUI;
+  private readonly _audioPlayer: IAudioPlayer;
 
   readonly camera: Camera;
   readonly grid: Grid;
@@ -37,6 +40,7 @@ export default class Scene extends SceneNode<THREE.Scene> {
     super(new THREE.Scene());
     this._textureLoader = new THREE.TextureLoader();
     this._gui = WithGUI.createAndApply(this, props);
+    this._audioPlayer = props.audioPlayer;
     this.camera = new Camera({
       fov: 55,
       aspect:
@@ -46,7 +50,7 @@ export default class Scene extends SceneNode<THREE.Scene> {
     });
     this.grid = new Grid(this._gui.container);
     this.axes = new Axes(this._gui.container);
-    this.lane = new Lane(this._gui.container);
+    this.lane = new Lane(this._gui.container, this._audioPlayer);
     this.add(this.grid);
     this.add(this.axes);
     this.add(this.lane);

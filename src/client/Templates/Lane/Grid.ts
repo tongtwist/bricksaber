@@ -7,14 +7,14 @@ export class LaneGrid extends SceneNode<THREE.Group> {
     super(grid);
   }
 
-  renderingComputation(dt: number): void {
-    const speed = this._bpm / 60
-    const deltaZ = speed * dt;
+  // renderingComputation(dt: number): void {
+  //   // const speed = this._bpm / 60
+  //   // const deltaZ = speed * dt;
 
-    this.obj3D.position.z += deltaZ;
+  //   // this.obj3D.position.z += deltaZ;
 
-    this.childrenRenderingComputations(dt);
-  }
+  //   this.childrenRenderingComputations(dt);
+  // }
 
   addToCell(child: ISceneNode, positionX: number, positionY: number) {
     if (positionX < 0 || positionX > 3 || positionY < 0 || positionY > 2) {
@@ -30,6 +30,6 @@ export class LaneGrid extends SceneNode<THREE.Group> {
     // child.obj3D.position.x = (0.5 + positionX - 2) * 1.2;
     // child.obj3D.position.y = (0.5 + positionY) * 1.2;
     child.obj3D.position.x = 0.5 + positionX - 2;
-    child.obj3D.position.y = 0.5 + positionY;
+    child.obj3D.position.y = 2 + positionY;
   }
 }

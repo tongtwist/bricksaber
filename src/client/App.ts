@@ -5,7 +5,14 @@ import { GUI } from "dat.gui";
 
 import AnimationLoop from "./AnimationLoop";
 import Scene from "./Scene";
-import { IPropsWithGUIOptions, IWithGUI, Track, WithGUI } from "./Components";
+import {
+  IPropsWithGUIOptions,
+  IWithGUI,
+  Track,
+  WithGUI,
+  IAudioPlayer,
+  AudioPlayer,
+} from "./Components";
 
 interface IAppProps extends IPropsWithGUIOptions {
   readonly scene: Scene;
@@ -36,6 +43,8 @@ export class App {
   }
 
   static create(container: HTMLElement): App {
+    const audioPlayer: IAudioPlayer = AudioPlayer.create();
+    audioPlayer.play("/tracks/1/song.egg");
     const renderer = new WebGLRenderer();
     renderer.setPixelRatio(Math.min(renderer.getPixelRatio(), 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -50,6 +59,7 @@ export class App {
         initialHeight: Math.max(window.innerHeight, 1),
       },
       gui: { container: gui },
+      audioPlayer,
     });
 
     scene.load("/tracks/1");

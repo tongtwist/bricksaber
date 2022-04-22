@@ -1,16 +1,19 @@
-import type { GUIContainer } from "../../Components";
+import type { GUIContainer, IAudioPlayer } from "../../Components";
 import { Group, Cube, LaneGrid, Bomb } from "../../Templates";
 
 export default class Lane extends Group {
+  private _audioPlayer: IAudioPlayer;
   // readonly grid: LaneGrid;
   // readonly cube: Cube;
   // readonly bomb: Bomb;
 
-  constructor(parentGUIContainer: GUIContainer) {
+  constructor(parentGUIContainer: GUIContainer, audioPlayer: IAudioPlayer) {
     super({
       name: "Lane",
       gui: { container: parentGUIContainer },
     });
+
+    this._audioPlayer = audioPlayer;
 
     // const cubeGeo = Cube.getGeometry();
 
@@ -34,5 +37,24 @@ export default class Lane extends Group {
     //   grid.addToCell(bomb, 2, 2);
     //   this.add(grid);
     // });
+  }
+
+  renderingComputation(dt: number): void {
+    const currentTime = this._audioPlayer.currentTime;
+
+    console.log(currentTime)
+
+    const speed = 150 / 60;
+    const deltaZ = speed * currentTime;
+
+    this.obj3D.position.z = deltaZ;
+
+    // this._obj3D.position.z = -dt;
+
+    // console.log(dt)
+
+    // console.log(currentTime);
+
+    this.childrenRenderingComputations(dt);
   }
 }
