@@ -6,8 +6,9 @@ export default class Platform2 extends Platform {
 	constructor (parentGUIContainer: GUIContainer) {
 		super({
 			name: "Platform2",
-			width: 20,
+			width: 4,
 			height: 100,
+			length: 0,
 			color: 0xff00ff,
 			gui: { container: parentGUIContainer }
 		})
