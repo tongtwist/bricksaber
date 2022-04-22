@@ -2,6 +2,8 @@ import * as THREE from "three"
 
 import type { GUIContainer } from "../../Components"
 import { Group } from "../../Templates"
+import { Light } from "../../Templates/Light"
+import AmbientLight from "./AmbientLight"
 import Platform1 from "./Platform1"
 import Platform2 from "./Platform2"
 
@@ -9,6 +11,7 @@ import Platform2 from "./Platform2"
 export default class Decor extends Group {
   readonly platform1: Platform1
   readonly platform2: Platform2
+  readonly ambientLight : Light
 
 	constructor(parentGUIContainer: GUIContainer) {
     super({
@@ -19,5 +22,8 @@ export default class Decor extends Group {
     this.platform2 = new Platform2(this._gui.container)
     this.add(this.platform1)
     this.add(this.platform2)
+    this.ambientLight = new AmbientLight(this._gui.container);
+    this.add(this.ambientLight);
+
   }
 }
