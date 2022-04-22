@@ -71,6 +71,8 @@ export class BoxBloomed extends SceneNode<Mesh> {
 			color: { type: "color" },
 			opacity: { type: "number", min: 0, max: 1, step: .01 },
 		})
+		this._obj3D.layers.enable(1)
+
 	}
 
 	get visible () { return this._obj3D.visible }

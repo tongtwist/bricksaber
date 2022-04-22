@@ -13,7 +13,6 @@ export class LeftBorder extends BoxBloomed {
 			gui: { container: parentGUIContainer },
 		});
 		this._obj3D.position.x = -2.15;
-		this._obj3D.layers.enable(1)
 	}
 }
 
@@ -28,6 +27,5 @@ export class RightBorder extends BoxBloomed {
 			gui: { container: parentGUIContainer },
 		});
 		this._obj3D.position.x = 2.15;
-		this._obj3D.layers.enable(1)
 	}
 }

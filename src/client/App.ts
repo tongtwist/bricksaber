@@ -65,18 +65,13 @@ export class App {
     new OrbitControls(scene.camera.obj3D, renderer.domElement)
 
     const renderScene = new RenderPass( scene.obj3D, scene.camera.obj3D );
-    const bloomPass = new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+    const bloomPass = new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0 );
     
     const bloomFolder = gui.addFolder("Bloom");
     bloomFolder.add(bloomPass, "strength", 0, 2).step(0.01);
     bloomFolder.add(bloomPass, "threshold", 0, 1).step(0.01);
     bloomFolder.add(bloomPass, "radius", 0, 1).step(0.01);
     bloomFolder.add(bloomPass, "renderToScreen");
-
-    bloomPass.threshold = 0.21;
-    bloomPass.strength = 1.2;
-    bloomPass.radius = 0.55;
-    bloomPass.renderToScreen = true;
 
     const composer = new EffectComposer( renderer );
     composer.addPass( renderScene );

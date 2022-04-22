@@ -43,7 +43,6 @@ export class PlayerPlatformLeftBorder extends BoxBloomed {
 			gui: { container: parentGUIContainer },
 		});
 		this._obj3D.position.x = -(1 + 0.15/2);
-		this._obj3D.layers.enable(1)
 	}
 }
 
@@ -58,7 +57,6 @@ export class PlayerPlatformRightBorder extends BoxBloomed {
 			gui: { container: parentGUIContainer },
 		});
 		this._obj3D.position.x = 1 + 0.15/2;
-		this._obj3D.layers.enable(1)
 	}
 }
 
@@ -74,7 +72,6 @@ export class PlayerPlatformTopBorder extends BoxBloomed {
 		});
 		this._obj3D.position.y = -(1 + 0.15/2);
 		this._obj3D.rotation.z = -Math.PI * .5;
-		this._obj3D.layers.enable(1)
 	}
 }
 
@@ -90,6 +87,5 @@ export class PlayerPlatformBottomBorder extends BoxBloomed {
 		});
 		this._obj3D.position.y = 1 + 0.15/2;
 		this._obj3D.rotation.z = Math.PI * .5;
-		this._obj3D.layers.enable(1)
 	}
 }
