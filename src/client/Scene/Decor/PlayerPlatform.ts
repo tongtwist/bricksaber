@@ -1,9 +1,10 @@
+import { EdgesGeometry, LineBasicMaterial, LineSegments } from "three"
 import type { GUIContainer } from "../../Components"
 import { Platform } from "../../Templates"
 
 
-export default class Platform1 extends Platform {
-	constructor (parentGUIContainer: GUIContainer) {
+export default class PlayerPlatform extends Platform {
+	constructor(parentGUIContainer: GUIContainer) {
 		super({
 			name: "Platform1",
 			transparent: true,
@@ -14,7 +15,7 @@ export default class Platform1 extends Platform {
 			color: 0x7f7f7f,
 			gui: { container: parentGUIContainer }
 		})
-		this._obj3D.rotation.x = -Math.PI *.5
+		this._obj3D.rotation.x = -Math.PI * .5
 		this._obj3D.position.y = 0
 	}
 }
