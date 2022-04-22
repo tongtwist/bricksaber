@@ -7,5 +7,6 @@ import {
 export default class camera extends PerspectiveCamera {
 	constructor (props: IPerspectiveCameraProps) {
 		super({...props, x: props.x ?? 15, y: props.y ?? 10, z: props.z ?? 15})
+		this._obj3D.layers.enable(1);
 	}
 }

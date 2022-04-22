@@ -1,7 +1,10 @@
-import { WebGLRenderer } from "three"
+import { WebGLRenderer,Vector2,Layers } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import Stats from "three/examples/jsm/libs/stats.module"
 import { GUI } from "dat.gui"
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 import AnimationLoop from "./AnimationLoop"
 import Scene from "./Scene"
@@ -41,7 +44,7 @@ export class App {
   }
 
   static create(container: HTMLElement): App {
-    const renderer = new WebGLRenderer()
+    const renderer = new WebGLRenderer({antialias: true})
     renderer.setPixelRatio(Math.min(renderer.getPixelRatio(), 2))
 		renderer.setSize(window.innerWidth, window.innerHeight)
 		renderer.shadowMap.enabled = true
@@ -61,7 +64,25 @@ export class App {
 
     new OrbitControls(scene.camera.obj3D, renderer.domElement)
 
-    const animationLoop = AnimationLoop.create(renderer, scene, gui, stats)
+    const renderScene = new RenderPass( scene.obj3D, scene.camera.obj3D );
+    const bloomPass = new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+    
+    const bloomFolder = gui.addFolder("Bloom");
+    bloomFolder.add(bloomPass, "strength", 0, 2).step(0.01);
+    bloomFolder.add(bloomPass, "threshold", 0, 1).step(0.01);
+    bloomFolder.add(bloomPass, "radius", 0, 1).step(0.01);
+    bloomFolder.add(bloomPass, "renderToScreen");
+
+    bloomPass.threshold = 0.21;
+    bloomPass.strength = 1.2;
+    bloomPass.radius = 0.55;
+    bloomPass.renderToScreen = true;
+
+    const composer = new EffectComposer( renderer );
+    composer.addPass( renderScene );
+    composer.addPass( bloomPass );
+
+    const animationLoop = AnimationLoop.create(renderer, scene, gui, stats, composer)
 
     const res = new App({ name: "App", scene, animationLoop, gui: { container: gui } })
 

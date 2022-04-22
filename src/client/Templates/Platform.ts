@@ -4,11 +4,8 @@ import {
 	MeshBasicMaterial,
 	DoubleSide,
 	Color,
-<<<<<<< HEAD
-	MeshPhysicalMaterial
-=======
+	MeshPhysicalMaterial,
 	BoxGeometry
->>>>>>> c2f3f3b912301eea0b1795e336e97d40d2ce4d56
 } from "three"
 
 import {
@@ -65,13 +62,8 @@ export class Platform extends SceneNode<Mesh> {
 
 	constructor(props: IPlatformProps) {
 		super(new Mesh(
-<<<<<<< HEAD
-			new PlaneGeometry(props.width, props.height),
+			new BoxGeometry(props.width, props.height,props.length),
 			new MeshPhysicalMaterial({
-=======
-			new BoxGeometry(props.width, props.height, props.length),
-			new MeshBasicMaterial({
->>>>>>> c2f3f3b912301eea0b1795e336e97d40d2ce4d56
 				color: props.color,
 				side: DoubleSide,
 				visible: props.visible ?? true,
@@ -99,7 +91,6 @@ export class Platform extends SceneNode<Mesh> {
 			length: { type: "number" },
 			color: { type: "color" },
 			opacity: { type: "number", min: 0, max: 1, step: .01 },
-<<<<<<< HEAD
 			reflectivity: { type: "number", min: 0, max: 1, step: .01 },
 			transmission: { type: "number", min: 0, max: 1, step: .01 },
 			roughness: { type: "number", min: 0, max: 1, step: .01 },
@@ -107,8 +98,6 @@ export class Platform extends SceneNode<Mesh> {
 			clearcoat: { type: "number", min: 0, max: 1, step: .01 },
 			clearcoatRoughness: { type: "number", min: 0, max: 1, step: .01 },
 			ior: { type: "number", min: 0, max: 1, step: .01 }
-=======
->>>>>>> c2f3f3b912301eea0b1795e336e97d40d2ce4d56
 		})
 	}
 

@@ -26,9 +26,9 @@ export default class Scene extends SceneNode<THREE.Scene> {
 	readonly camera: Camera
 	readonly grid: Grid
 	readonly axes: Axes
-  readonly decor: Decor
+	readonly decor: Decor
 
-	constructor (props: ISceneProps) {
+	constructor(props: ISceneProps) {
 		super(new THREE.Scene())
 		this._textureLoader = new THREE.TextureLoader()
 		this._gui = WithGUI.createAndApply(this, props)
@@ -36,14 +36,14 @@ export default class Scene extends SceneNode<THREE.Scene> {
 			fov: 55,
 			aspect: props.viewport.initialWidth / Math.max(props.viewport.initialHeight, 1),
 			near: 0.1,
-			far: 100
+			far: 100,
 		})
 		this.grid = new Grid(this._gui.container)
 		this.axes = new Axes(this._gui.container)
-    this.decor = new Decor(this._gui.container)
+		this.decor = new Decor(this._gui.container)
 
 		this.add(this.decor)
-    this.add(this.grid)
+		this.add(this.grid)
 		this.add(this.axes)
 	}
 
