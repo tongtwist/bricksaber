@@ -46,16 +46,12 @@ export default class Scene extends SceneNode<THREE.Scene> {
 			},
 			name: "joueur"
 		});
+		this.joueur.obj3D.position.y = 1.25
 
 		this.joueur.init()
 		this.add(this.grid)
 		this.add(this.axes)
 		this.add(this.joueur)
-
-	
-
-		//this.joueur.init()
-
 	}
 
 	renderingComputation(dt: number) {
