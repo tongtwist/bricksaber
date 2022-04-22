@@ -8,6 +8,7 @@ export default class Platform2 extends Platform {
 			name: "Platform2",
 			width: 4,
 			height: 100,
+			length: 0,
 			color: 0xff00ff,
 			gui: { container: parentGUIContainer },
 			reflectivity: .5,

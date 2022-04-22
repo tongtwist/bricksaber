@@ -1,15 +1,13 @@
-import * as THREE from "three"
-
 import type { GUIContainer } from "../../Components"
 import { Group } from "../../Templates"
 import { Light } from "../../Templates/Light"
 import AmbientLight from "./AmbientLight"
-import Platform1 from "./Platform1"
+import PlayerPlatform from "./PlayerPlatform"
 import Platform2 from "./Platform2"
 
 
 export default class Decor extends Group {
-  readonly platform1: Platform1
+  readonly playerPlatform: PlayerPlatform
   readonly platform2: Platform2
   readonly ambientLight : Light
 
@@ -18,9 +16,9 @@ export default class Decor extends Group {
       name: "Decor",
       gui: { container: parentGUIContainer }
     })
-    this.platform1 = new Platform1(this._gui.container)
+    this.playerPlatform = new PlayerPlatform(this._gui.container)
     this.platform2 = new Platform2(this._gui.container)
-    this.add(this.platform1)
+    this.add(this.playerPlatform)
     this.add(this.platform2)
     this.ambientLight = new AmbientLight(this._gui.container);
     this.add(this.ambientLight);
