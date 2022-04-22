@@ -33,6 +33,10 @@ export default class BeatmapLoader {
     return this;
   }
 
+  getBpm() {
+    return this._bpm;
+  }
+
   getLaneGrids() {
     // const laneGrids: laneGridItem[] = [];
     console.log(this._beatmapSet.beatmap);

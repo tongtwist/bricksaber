@@ -34,7 +34,7 @@ export default class Scene extends SceneNode<THREE.Scene> {
   readonly camera: Camera;
   readonly grid: Grid;
   readonly axes: Axes;
-  readonly lane: Lane;
+  private _lane?: Lane;
 
   constructor(props: ISceneProps) {
     super(new THREE.Scene());
@@ -50,10 +50,8 @@ export default class Scene extends SceneNode<THREE.Scene> {
     });
     this.grid = new Grid(this._gui.container);
     this.axes = new Axes(this._gui.container);
-    this.lane = new Lane(this._gui.container, this._audioPlayer);
     this.add(this.grid);
     this.add(this.axes);
-    this.add(this.lane);
   }
 
   async load(url: string) {
@@ -61,9 +59,17 @@ export default class Scene extends SceneNode<THREE.Scene> {
     await loader.load(url, "Expert");
     const laneGrids = loader.getLaneGrids();
     // BeatmapLoader.loadIntoLane(url, this.lane);
+    this._lane = new Lane(
+      this._gui.container,
+      loader.getBpm(),
+      this._audioPlayer
+    );
+
     laneGrids.forEach((laneGridWrapper) => {
-      this.lane.add(laneGridWrapper.laneGrid);
+      this._lane!.add(laneGridWrapper.laneGrid);
     });
+
+    this.add(this._lane);
   }
 
   renderingComputation(dt: number) {
