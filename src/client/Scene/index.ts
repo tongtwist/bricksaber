@@ -10,7 +10,7 @@ import Camera from "./Camera"
 import Axes from "./Axes"
 import Grid from "./Grid"
 import Lane from "./Lane"
-import { Light } from "./Light"
+// import { Light } from "./Light"
 
 
 export interface ISceneProps extends IPropsWithGUIOptions {

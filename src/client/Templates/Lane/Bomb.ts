@@ -5,14 +5,14 @@ import { IObstacle } from "./Obstacle"
 
 export class Bomb extends SceneNode<THREE.Mesh> implements IObstacle {
   constructor() {
-    const geometry = new THREE.SphereGeometry(1)
+    const geometry = new THREE.SphereGeometry(0.4)
     const material = new THREE.MeshBasicMaterial({ color: 0x888888 })
     const cube = new THREE.Mesh(geometry, material)
 
     super(cube)
   }
 
-  renderComputation(time: number): void {
+  renderingComputation(time: number): void {
     // Do nothing
   }
 
