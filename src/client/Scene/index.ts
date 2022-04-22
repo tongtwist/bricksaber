@@ -1,11 +1,20 @@
 import * as THREE from "three";
 
-import { WithGUI, IWithGUI, IPropsWithGUIOptions } from "../Components";
-import { SceneNode } from "../Templates";
+import {
+  WithGUI,
+  IWithGUI,
+  IPropsWithGUIOptions,
+  Track,
+  IBeatmapBlock,
+  IBeatmapBomb,
+  IBeatmapWall,
+} from "../Components";
+import { Bomb, Cube, LaneGrid, SceneNode } from "../Templates";
 import Camera from "./Camera";
 import Axes from "./Axes";
 import Grid from "./Grid";
 import Lane from "./Lane";
+import BeatmapLoader from "../Components/Track/BeatmapLoader";
 // import { Light } from "./Light"
 
 export interface ISceneProps extends IPropsWithGUIOptions {
@@ -41,9 +50,16 @@ export default class Scene extends SceneNode<THREE.Scene> {
     this.add(this.grid);
     this.add(this.axes);
     this.add(this.lane);
-    // console.log(this.lane)
-    // this.add(this.grid)
-    // this.add(this.axes)
+  }
+
+  async load(url: string) {
+    const loader = new BeatmapLoader();
+    await loader.load(url, "Expert");
+    const laneGrids = loader.getLaneGrids();
+    // BeatmapLoader.loadIntoLane(url, this.lane);
+    laneGrids.forEach((laneGridWrapper) => {
+      this.lane.add(laneGridWrapper.laneGrid);
+    });
   }
 
   renderingComputation(dt: number) {

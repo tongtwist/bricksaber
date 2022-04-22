@@ -52,10 +52,7 @@ export class App {
       gui: { container: gui },
     });
 
-    // Move this into a proper class
-    Track.load("/tracks/1").then((res) => {
-      
-    });
+    scene.load("/tracks/1");
 
     const stats = Stats();
 

@@ -2,13 +2,14 @@ import * as THREE from "three";
 import { ISceneNode, SceneNode } from "../SceneNode";
 
 export class LaneGrid extends SceneNode<THREE.Group> {
-  constructor() {
+  constructor(private _bpm: number) {
     const grid = new THREE.Group();
     super(grid);
   }
 
   renderingComputation(dt: number): void {
-    const deltaZ = 1 * dt;
+    const speed = this._bpm / 60
+    const deltaZ = speed * dt;
 
     this.obj3D.position.z += deltaZ;
 
