@@ -64,7 +64,7 @@ export class Joueur extends SceneNode<THREE.Mesh> {
     const body = new THREE.Mesh(geometry, this.material);
     this.obj3D.add(body);
   }
-  createHarms() {
+  createArms() {
     for (let i = 0; i < 2; i++) {
       const material = new THREE.MeshLambertMaterial({color: 0xea80fc});
       const geometry = new THREE.BoxGeometry(0.25, 1, 0.25);
@@ -82,7 +82,7 @@ export class Joueur extends SceneNode<THREE.Mesh> {
   init() {
     this.createHead();
     this.createBody();
-    this.createHarms();
+    this.createArms();
   }
 
   degreesToRadians = (degrees: number) => {

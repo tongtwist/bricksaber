@@ -10,25 +10,28 @@ import {
 	IWithGUI,
 	WithGUI
 } from "./Components"
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer"
+import { WebGLRenderer } from "three"
 
 
 interface IAnimationLoopGUIProperties
-	extends GUIProperties
-{
+	extends GUIProperties {
 	readonly timeAccelerator: IGUINumberProperty
 }
 
 interface IAnimationLoopProps extends IPropsWithGUIOptions<IAnimationLoopGUIProperties> {
-	readonly renderer: THREE.Renderer
+	readonly renderer: WebGLRenderer
 	readonly scene: Scene
 	readonly stats: Stats
+	readonly composer: EffectComposer
 }
 
 export default class AnimationLoop {
-	private readonly _renderer: THREE.Renderer
+	private readonly _renderer: WebGLRenderer
 	private readonly _scene: Scene
 	private readonly _stats: Stats
 	private readonly _gui?: IWithGUI
+	private readonly _composer: EffectComposer
 	private readonly _clock: THREE.Clock
 	private _timeAccelerator: number = 1
 	private _started: boolean = false
@@ -45,53 +48,62 @@ export default class AnimationLoop {
 			}
 		})
 		this._clock = new THREE.Clock()
+		this._composer = props.composer;
 	}
 
-	get renderer (): THREE.Renderer { return this._renderer }
-	get timeAccelerator (): number { return this._timeAccelerator }
-	set timeAccelerator (v: number) { this._timeAccelerator = Math.max(0, v) }
-	get started () { return this._started }
+	get renderer(): THREE.Renderer { return this._renderer }
+	get timeAccelerator(): number { return this._timeAccelerator }
+	set timeAccelerator(v: number) { this._timeAccelerator = Math.max(0, v) }
+	get started() { return this._started }
 
-  start() {
-    if (!this._started) {
+	start() {
+		if (!this._started) {
 			this._animate(0)
 			this._started = true
 		}
-  }
-
-  stop() {
-    if (this._started) {
-			cancelAnimationFrame(this._requestAnimationFrameID),
-			this._started = false
-		}
-  }
-
-  render() {
-		this._renderer.render(this._scene.obj3D, this._scene.camera.obj3D)
 	}
 
-  private _animate(t: number) {
-    this._requestAnimationFrameID = requestAnimationFrame(this._animate.bind(this))
-    const newTime = t / 1000
-    const dt = (newTime - this._oldTime) * this._timeAccelerator
-    this._scene.renderingComputation(dt)
-    this._oldTime = newTime
-    this._stats.update()
-    this.render()
-  }
+	stop() {
+		if (this._started) {
+			cancelAnimationFrame(this._requestAnimationFrameID),
+				this._started = false
+		}
+	}
 
-  static create(
+	render() {
+		this._renderer.autoClear = false;
+		this._renderer.clear();
+		this._scene.camera.obj3D.layers.set(1);
+		this._composer.render();
+		this._renderer.clearDepth();
+		this._scene.camera.obj3D.layers.set(0);
+		this._renderer.render(this._scene.obj3D, this._scene.camera.obj3D);
+	}
+
+	private _animate(t: number) {
+		this._requestAnimationFrameID = requestAnimationFrame(this._animate.bind(this))
+		const newTime = t / 1000
+		const dt = (newTime - this._oldTime) * this._timeAccelerator
+		this._scene.renderingComputation(dt)
+		this._oldTime = newTime
+		this._stats.update()
+		this.render()
+	}
+
+	static create(
 		renderer: THREE.WebGLRenderer,
 		scene: Scene,
 		gui: GUIContainer,
-		stats: Stats
+		stats: Stats,
+		composer: EffectComposer
 	): AnimationLoop {
 		return new AnimationLoop({
 			name: "AnimationLoop",
 			renderer,
 			scene,
 			stats,
-			gui: { container: gui }
+			gui: { container: gui },
+			composer,
 		})
 	}
 }
