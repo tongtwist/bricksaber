@@ -36,7 +36,7 @@ export default class Scene extends SceneNode<THREE.Scene> {
 			fov: 55,
 			aspect: props.viewport.initialWidth / Math.max(props.viewport.initialHeight, 1),
 			near: 0.1,
-			far: 100,
+			far: 200,
 		})
 		this.grid = new Grid(this._gui.container)
 		this.axes = new Axes(this._gui.container)
@@ -47,12 +47,12 @@ export default class Scene extends SceneNode<THREE.Scene> {
 
 		const color = 0x000000;
 		const near = 10;
-		const far = 100;
+		const far = 150;
 		this._obj3D.fog = new THREE.Fog(color, near, far);
 
 		const guiFog = this._gui.container.addFolder("Fog");
-		guiFog.add(this._obj3D.fog, "near", 0, 100);
-		guiFog.add(this._obj3D.fog, "far", 0, 100);
+		guiFog.add(this._obj3D.fog, "near", 0, 199);
+		guiFog.add(this._obj3D.fog, "far", 0, 200);
 		guiFog.addColor(this._obj3D.fog, "color");
 
 

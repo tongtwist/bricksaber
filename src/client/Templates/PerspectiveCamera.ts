@@ -15,7 +15,14 @@ export interface IPerspectiveCameraProps {
 
 export class PerspectiveCamera extends SceneNode<THREE.PerspectiveCamera> {
 	constructor (props: IPerspectiveCameraProps) {
-		super(new THREE.PerspectiveCamera(props.fov, props.aspect, props.near, props.far))
+		super(
+			new THREE.PerspectiveCamera(
+				props.fov,
+				props.aspect,
+				props.near,
+				props.far
+			)
+		)
 		typeof props.x === "number" && (this._obj3D.position.x = props.x)
 		typeof props.y === "number" && (this._obj3D.position.y = props.y)
 		typeof props.z === "number" && (this._obj3D.position.z = props.z)

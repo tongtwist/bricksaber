@@ -1,8 +1,8 @@
 import {
 	Mesh,
-	PlaneGeometry,
+//	PlaneGeometry,
 	MeshBasicMaterial,
-	DoubleSide,
+//	DoubleSide,
 	Color,
 	MeshPhysicalMaterial,
 	BoxGeometry
@@ -16,8 +16,8 @@ import {
 	IPropsWithGUIOptions,
 	IWithGUI,
 	WithGUI
-} from "../Components"
-import { SceneNode } from "./SceneNode"
+} from "../../Components"
+import { SceneNode } from "../SceneNode"
 
 
 export interface IPlatformGUIProperties extends GUIProperties {
@@ -38,19 +38,19 @@ export interface IPlatformGUIProperties extends GUIProperties {
 
 export interface IPlatformProps extends IPropsWithGUIOptions<IPlatformGUIProperties> {
 	readonly visible?: boolean
-	readonly width: number
-	readonly height: number
-	readonly length: number
-	readonly color: number
+	readonly width?: number
+	readonly height?: number
+	readonly length?: number
+	readonly color?: number
 	readonly transparent?: boolean
 	readonly opacity?: number
-	readonly reflectivity: number
-	readonly transmission: number
-	readonly roughness: number
-	readonly metalness: number
-	readonly clearcoat: number
-	readonly clearcoatRoughness: number
-	readonly ior: number
+	readonly reflectivity?: number
+	readonly transmission?: number
+	readonly roughness?: number
+	readonly metalness?: number
+	readonly clearcoat?: number
+	readonly clearcoatRoughness?: number
+	readonly ior?: number
 }
 
 export class Platform extends SceneNode<Mesh> {
@@ -61,11 +61,15 @@ export class Platform extends SceneNode<Mesh> {
 	protected readonly _gui: IWithGUI
 
 	constructor(props: IPlatformProps) {
+		const initialWidth = props.width ?? 0.25
+		const initialHeight = props.height ?? 0.25
+		const initialLength = props.length ?? 0.25
+		const color = props.color ?? 0x000000
 		super(new Mesh(
-			new BoxGeometry(props.width, props.height,props.length),
-			new MeshPhysicalMaterial({
-				color: props.color,
-				side: DoubleSide,
+			new BoxGeometry(initialWidth, initialHeight, initialLength),
+			new MeshPhysicalMaterial({	// TODO: Si Pb de perf, passer à un type de Material plus light pour le GPU
+				color,
+//				side: DoubleSide,	// -> Eviter le DoubleSide si pas utile
 				visible: props.visible ?? true,
 				transparent: props.transparent ?? false,
 				opacity: props.opacity ?? 1,
@@ -79,16 +83,16 @@ export class Platform extends SceneNode<Mesh> {
 			})
 		))
 
-		this._initialWidth = props.width || 1
-		this._initialHeight = props.height || 1
-		this._initialLength = props.length || 1
+		this._initialWidth = initialWidth || 1
+		this._initialHeight =  initialHeight || 1
+		this._initialLength =  initialLength || 1
 
-		this._color = props.color
+		this._color = color
 		this._gui = WithGUI.createAndApply(this, props, {
 			visible: { type: "boolean" },
-			width: { type: "number" },
-			height: { type: "number" },
-			length: { type: "number" },
+			width: { type: "number", min: 0, max: 5, step: .05 },
+			height: { type: "number", min: .05, max: 1, step: .05 },
+			length: { type: "number", min: 10, max: 200, step: .1 },
 			color: { type: "color" },
 			opacity: { type: "number", min: 0, max: 1, step: .01 },
 			reflectivity: { type: "number", min: 0, max: 1, step: .01 },

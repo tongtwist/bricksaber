@@ -7,7 +7,7 @@ export default class SunAxes extends Axes {
 		super({
 			name: "Axes",
 			size: 3,
-			visible: true,
+			visible: false,
 			gui: { container: parentGUIContainer }
 		})
 	}

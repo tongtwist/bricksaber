@@ -7,7 +7,7 @@ export default class SunGrid extends Grid {
 		super({
 			name: "Grid",
 			size: 4,
-			visible: true,
+			visible: false,
 			gui: { container: parentGUIContainer }
 		})
 	}

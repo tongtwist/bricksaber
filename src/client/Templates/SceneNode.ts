@@ -5,7 +5,7 @@ export interface ISceneNode<T extends Object3D = Object3D> {
 	readonly name?: string
 	readonly obj3D: T
 	renderingComputation?: (dt: number) => void
-	add(child: ISceneNode): void
+	add(...children: Array<ISceneNode>): void
 }
 
 type ISceneNodeWithRenderingComputation<T extends Object3D = Object3D>
@@ -30,13 +30,15 @@ export abstract class SceneNode<T extends Object3D>
 		})
 	}
 
-	add (child: ISceneNode) {
-		this._children.push(child)
-		child.name && (this._childrenByName[child.name] = child)
-		child.renderingComputation && this._childrenWithComputations.push(
-			child as ISceneNodeWithRenderingComputation
-		)
-		this._obj3D.add(child.obj3D)
+	add (...children: Array<ISceneNode>) {
+		children.forEach((child: ISceneNode) => {
+			this._children.push(child)
+			child.name && (this._childrenByName[child.name] = child)
+			child.renderingComputation && this._childrenWithComputations.push(
+				child as ISceneNodeWithRenderingComputation
+			)
+			this._obj3D.add(child.obj3D)
+		})
 	}
 
 	child(i: number | string): ISceneNode | undefined {
