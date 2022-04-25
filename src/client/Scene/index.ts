@@ -9,7 +9,8 @@ import { SceneNode } from "../Templates"
 import Camera from "./Camera"
 import Axes from "./Axes"
 import Grid from "./Grid"
-import { Joueur } from "./Joueur/index"
+import AmbientLight from "./AmbientLight"
+import Player from "./Player"
 import Decor from "./Decor"
 
 
@@ -25,9 +26,10 @@ export default class Scene extends SceneNode<THREE.Scene> {
 	private readonly _gui: IWithGUI
 
 	readonly camera: Camera
+	readonly ambienLight: AmbientLight
 	readonly grid: Grid
 	readonly axes: Axes
-	readonly joueur: Joueur
+	readonly player: Player
 	readonly decor: Decor
 
 	constructor(props: ISceneProps) {
@@ -40,33 +42,29 @@ export default class Scene extends SceneNode<THREE.Scene> {
 			near: 0.1,
 			far: 200,
 		})
+		this.ambienLight = new AmbientLight(this._gui.container)
 		this.grid = new Grid(this._gui.container)
 		this.axes = new Axes(this._gui.container)
 		this.decor = new Decor(this._gui.container)
-		this.joueur = new Joueur({
-			gui:{ 
-				container: this._gui.container,
-			},
-			name: "joueur"
-		});
-		this.joueur.obj3D.position.y = 1.25
-		this.joueur.init()
+		this.player = new Player(this._gui.container)
+		this.player.obj3D.position.y = 1.25
+		//this.player.init()
 		this.add(
+			this.ambienLight,
 			this.grid,
 			this.axes,
 			this.decor,
-			this.joueur
+			this.player
 		)
 
-		const color = 0x000000;
-		const near = 10;
-		const far = 150;
-		this._obj3D.fog = new THREE.Fog(color, near, far);
-
-		const guiFog = this._gui.container.addFolder("Fog");
-		guiFog.add(this._obj3D.fog, "near", 0, 199);
-		guiFog.add(this._obj3D.fog, "far", 0, 200);
-		guiFog.addColor(this._obj3D.fog, "color");
+		const color = 0x000000
+		const near = 10
+		const far = 150
+		this._obj3D.fog = new THREE.Fog(color, near, far)
+		const guiFog = this._gui.container.addFolder("Fog")
+		guiFog.add(this._obj3D.fog, "near", 0, 199)
+		guiFog.add(this._obj3D.fog, "far", 0, 200)
+		guiFog.addColor(this._obj3D.fog, "color")
 	}
 
 	renderingComputation(dt: number) {

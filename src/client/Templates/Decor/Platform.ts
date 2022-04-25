@@ -84,8 +84,8 @@ export class Platform extends SceneNode<Mesh> {
 		))
 
 		this._initialWidth = initialWidth || 1
-		this._initialHeight =  initialHeight || 1
-		this._initialLength =  initialLength || 1
+		this._initialHeight = initialHeight || 1
+		this._initialLength = initialLength || 1
 
 		this._color = color
 		this._gui = WithGUI.createAndApply(this, props, {
