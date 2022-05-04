@@ -1,88 +1,129 @@
-import { WebGLRenderer } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import Stats from "three/examples/jsm/libs/stats.module";
-import { GUI } from "dat.gui";
+import {
+  Group,
+  Object3D,
+  WebGLRenderer,
+  TextureLoader
+} from "three"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import Stats from "three/examples/jsm/libs/stats.module"
+import { GUI } from "dat.gui"
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import {
+  GLTF,
+  GLTFLoader
+} from "three/examples/jsm/loaders/GLTFLoader"
 
-import AnimationLoop from "./AnimationLoop";
-import Scene from "./Scene";
+import AnimationLoop from "./Components/AnimationLoop"
+import Scene from "./Scene"
 import {
   IPropsWithGUIOptions,
   IWithGUI,
   Track,
   WithGUI,
   IAudioPlayer,
-  AudioPlayer,
-} from "./Components";
+  AudioPlayer
+} from "./Components"
+import PostProcessing from "./Components/PostProcessing"
+import Camera from "./Scene/Camera"
+
 
 interface IAppProps extends IPropsWithGUIOptions {
-  readonly scene: Scene;
-  readonly animationLoop: AnimationLoop;
+  readonly scene: Scene
+  readonly animationLoop: AnimationLoop
+  readonly gltfLoader: GLTFLoader
 }
 
 export class App {
-  private readonly _scene: Scene;
-  private readonly _animationLoop: AnimationLoop;
-  private readonly _gui: IWithGUI;
+  private readonly _scene: Scene
+  private readonly _animationLoop: AnimationLoop
+  private readonly _gltfLoader: GLTFLoader
+  private readonly _gui: IWithGUI
 
-  private constructor(props: IAppProps) {
-    this._scene = props.scene;
-    this._animationLoop = props.animationLoop;
-    this._gui = WithGUI.createAndApply(this, props);
+  private constructor (props: IAppProps) {
+    this._scene = props.scene
+    this._animationLoop = props.animationLoop
+    this._gltfLoader = props.gltfLoader
+    this._gui = WithGUI.createAndApply(this, props)
   }
 
   private _onWindowResize() {
-    this._scene.camera.setAspect(window.innerWidth, window.innerHeight);
-    this._animationLoop.renderer.setSize(window.innerWidth, window.innerHeight);
+    const c: Camera | undefined = this._scene.camera
+    c && c.setAspect(window.innerWidth, window.innerHeight)
+    const pixelRatio: number = Math.min(window.devicePixelRatio, 2)
+    const renderer: WebGLRenderer = this._animationLoop.renderer
+    renderer.setPixelRatio(pixelRatio)
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    const composer: EffectComposer = this._animationLoop.composer
+    composer.setPixelRatio(pixelRatio)
+    composer.setSize(window.innerWidth, window.innerHeight)
     if (!this._animationLoop.started) {
-      this._animationLoop.render();
+      this._animationLoop.render()
     }
   }
 
   run() {
-    this._animationLoop.start();
+    this._animationLoop.start()
   }
 
-  static create(container: HTMLElement): App {
-    const audioPlayer: IAudioPlayer = AudioPlayer.create();
-    audioPlayer.play("/tracks/1/song.egg");
-    const renderer = new WebGLRenderer();
-    renderer.setPixelRatio(Math.min(renderer.getPixelRatio(), 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
+  static async create(
+    container: HTMLElement
+  ): Promise<App> {
+    const audioPlayer: IAudioPlayer = AudioPlayer.create()
+    const renderer = new WebGLRenderer({ antialias: true })
+    renderer.setPixelRatio(Math.min(renderer.getPixelRatio(), 2))
+		renderer.setSize(window.innerWidth, window.innerHeight)
+		renderer.shadowMap.enabled = true
+    renderer.autoClear = false
 
-    const gui = new GUI();
+    const gui = new GUI()
+    const textureLoader = new TextureLoader()
+    const gltfLoader = new GLTFLoader()
 
-    const scene = new Scene({
+    const scene = await Scene.create({
       name: "Scene",
       viewport: {
-        initialWidth: window.innerWidth,
-        initialHeight: Math.max(window.innerHeight, 1),
-      },
-      gui: { container: gui },
-      audioPlayer,
-    });
+				initialWidth: window.innerWidth,
+				initialHeight: Math.max(window.innerHeight, 1)
+			},
+      textureLoader,
+      gltfLoader,
+			gui: { container: gui }
+    })
 
-    scene.load("/tracks/1");
+    const stats = Stats()
 
-    const stats = Stats();
+    new OrbitControls(scene.camera!.obj3D, renderer.domElement)
 
-    new OrbitControls(scene.camera.obj3D, renderer.domElement);
+    const postProcessing: PostProcessing = new PostProcessing({
+      name: "PostProcessing",
+      renderer: renderer,
+      scene: scene.obj3D,
+      camera: scene.camera!.obj3D,
+      gui: { container: gui }
+    })
 
-    const animationLoop = AnimationLoop.create(renderer, scene, gui, stats);
+    const animationLoop = AnimationLoop.create(
+      renderer,
+      scene,
+      gui,
+      stats,
+      postProcessing.composer
+    )
 
     const res = new App({
       name: "App",
       scene,
       animationLoop,
-      gui: { container: gui },
-    });
+      gltfLoader,
+      gui: { container: gui }
+    })
 
-    container.appendChild(renderer.domElement);
-    container.appendChild(stats.dom);
+    container.appendChild(renderer.domElement)
+    container.appendChild(stats.dom)
 
-    window.addEventListener("resize", res._onWindowResize.bind(res), false);
+    window.addEventListener("resize", res._onWindowResize.bind(res), false)
 
-    return res;
+    return res
   }
 }
 

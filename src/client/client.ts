@@ -1,4 +1,7 @@
 import { App } from "./App"
 
-const app = App.create(document.body)
-app.run()
+async function main () {
+	const app = await App.create(document.body)
+	app.run()
+}
+main()

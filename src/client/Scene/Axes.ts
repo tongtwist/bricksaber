@@ -3,12 +3,20 @@ import type { GUIContainer } from "../Components"
 
 
 export default class SunAxes extends Axes {
-	constructor (parentGUIContainer: GUIContainer) {
+	private constructor (
+		parentGUIContainer: GUIContainer
+	) {
 		super({
 			name: "Axes",
 			size: 3,
-			visible: true,
+			visible: false,
 			gui: { container: parentGUIContainer }
 		})
+	}
+
+	static async create (
+		parentContainer: GUIContainer
+	): Promise<SunAxes> {
+		return new SunAxes(parentContainer)
 	}
 }
