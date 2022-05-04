@@ -12,9 +12,11 @@ export default class AmbientLight extends SceneNode<ThreeAmbientLight> {
 	private _intensity: number
 	private readonly _gui: IWithGUI
 
-	constructor (parentContainer: GUIContainer) {
+	private constructor (
+		parentContainer: GUIContainer
+	) {
 		const color = 0xffffff
-		const intensity = 0.2
+		const intensity = 0.8
 		super(new ThreeAmbientLight(color, intensity))
 		this._color = color
 		this._intensity = intensity
@@ -39,5 +41,11 @@ export default class AmbientLight extends SceneNode<ThreeAmbientLight> {
 	set intensity (v: number) {
 		this._intensity = Math.min(1, Math.max(0, v))
 		this._obj3D.intensity = this._intensity
+	}
+
+	static async create (
+		parentContainer: GUIContainer
+	): Promise<AmbientLight> {
+		return new AmbientLight(parentContainer)
 	}
 }

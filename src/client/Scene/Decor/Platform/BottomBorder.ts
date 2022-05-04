@@ -1,17 +1,13 @@
 import type { GUIContainer } from "../../../Components"
-import { BoxBloomed } from "../../../Templates/BoxBloomed"
+import { Border } from "../../../Templates"
 
 
-export default class PlayerPlatformBottomBorder extends BoxBloomed {
+export default class PlayerPlatformBottomBorder extends Border {
 	constructor (parentGUIContainer: GUIContainer) {
 		super({
 			name: "PlayerPlatformBottomBorder",
-			width: 0.15,
-			height: 2.3,
-			length: 0.25,
-			color: 0xffffff,
-			y: 1 + 0.15/2,
-			zRotation: Math.PI * .5,
+			width: 2.05,
+			z: 1,
 			gui: { container: parentGUIContainer },
 		})
 	}

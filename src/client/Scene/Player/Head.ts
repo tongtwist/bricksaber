@@ -40,7 +40,9 @@ export default class Head extends SceneNode<Mesh> {
 	private _color: number
 	protected readonly _gui: IWithGUI
 
-	constructor (props: IPlayerHeadProps) {
+	private constructor (
+		props: IPlayerHeadProps
+	) {
 		const initialWidth = props.width ?? 1.4
 		const initialHeight = props.height ?? 1.4
 		const initialLength = props.length ?? 1.4
@@ -82,5 +84,11 @@ export default class Head extends SceneNode<Mesh> {
 	set color (c: number) {
 		this._color = Math.min(0xffffff, Math.max(0, c));
 		(this._obj3D.material as MeshLambertMaterial).color.set(this._color)
+	}
+
+	static async create (
+		props: IPlayerHeadProps
+	): Promise<Head> {
+		return new Head(props)
 	}
 }

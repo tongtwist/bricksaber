@@ -1,3 +1,3 @@
 export default interface IObstacle {
-  handleHit(): void;
+  handleHit(): void
 }

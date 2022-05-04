@@ -40,7 +40,9 @@ export default class Body extends SceneNode<Mesh> {
 	private _color: number
 	protected readonly _gui: IWithGUI
 
-	constructor (props: IPlayerBodyProps) {
+	private constructor (
+		props: IPlayerBodyProps
+	) {
 		const initialWidth = props.width ?? 1
 		const initialHeight = props.height ?? 1.5
 		const initialLength = props.length ?? 1
@@ -81,5 +83,11 @@ export default class Body extends SceneNode<Mesh> {
 	set color (c: number) {
 		this._color = Math.max(0, c);
 		(this._obj3D.material as MeshLambertMaterial).color.set(new Color(this._color))
+	}
+
+	static async create (
+		props: IPlayerBodyProps
+	): Promise<Body> {
+		return new Body(props)
 	}
 }

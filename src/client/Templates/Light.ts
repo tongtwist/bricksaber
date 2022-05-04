@@ -27,7 +27,6 @@ export interface ILightProps extends IPropsWithGUIOptions<ILightGUIProperties> {
 }
 
 export class Light extends SceneNode<ThreeLight> {
-
 	private _color: number
 	protected readonly _gui: IWithGUI
 
@@ -39,9 +38,7 @@ export class Light extends SceneNode<ThreeLight> {
 			)
         )
 		this._color = props.color
-
-
-	    this._gui = WithGUI.createAndApply(this, props, {
+		this._gui = WithGUI.createAndApply(this, props, {
 			color: { type: "color" },
 			intensity: { type: "number" }
 		})
@@ -52,12 +49,8 @@ export class Light extends SceneNode<ThreeLight> {
 		this._color = c
 		this._obj3D.color = new Color(c);
 	}
-	
 	get intensity () { return this._obj3D.intensity }
 	set intensity (i: number) {
 		this._obj3D.intensity = i
 	}
-
-
-	
 }

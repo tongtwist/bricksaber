@@ -1,8 +1,6 @@
 import {
 	Mesh,
-//	PlaneGeometry,
 	MeshBasicMaterial,
-//	DoubleSide,
 	Color,
 	BoxGeometry
 } from "three"
@@ -78,9 +76,9 @@ export class BoxBloomed extends SceneNode<Mesh> {
 				opacity: props.opacity ?? 1
 			})
 		))
-		this._initialWidth = initialWidth || 1
-		this._initialHeight = initialHeight || 1
-		this._initialLength = initialLength || 1
+		this._initialWidth = initialWidth
+		this._initialHeight = initialHeight
+		this._initialLength = initialLength
 		this._obj3D.layers.enable(1)
 		typeof props.x === "number" && (this._obj3D.position.x = props.x)
 		typeof props.y === "number" && (this._obj3D.position.y = props.y)
@@ -94,9 +92,9 @@ export class BoxBloomed extends SceneNode<Mesh> {
 		this._color = color
 		this._gui = WithGUI.createAndApply(this, props, {
 			visible: { type: "boolean" },
-			width: { type: "number", min: 0, max: 200, step: .25 },
-			height: { type: "number", min: 0, max: 200, step: .25 },
-			length: { type: "number", min: 0, max: 200, step: .25 },
+			width: { type: "number", min: 0, max: 200, step: .05 },
+			height: { type: "number", min: 0, max: 200, step: .05 },
+			length: { type: "number", min: 0, max: 200, step: .05 },
 			color: { type: "color" },
 			opacity: { type: "number", min: 0, max: 1, step: .01 },
 			x: { type: "number" },

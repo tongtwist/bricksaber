@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import Stats from "three/examples/jsm/libs/stats.module"
 
-import type Scene from "./Scene"
+import type Scene from "../Scene"
 import {
 	GUIContainer,
 	GUIProperties,
@@ -9,13 +9,13 @@ import {
 	IPropsWithGUIOptions,
 	IWithGUI,
 	WithGUI
-} from "./Components"
+} from "."
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer"
 import { WebGLRenderer } from "three"
+import Camera from "../Scene/Camera"
 
 
-interface IAnimationLoopGUIProperties
-	extends GUIProperties {
+interface IAnimationLoopGUIProperties extends GUIProperties {
 	readonly timeAccelerator: IGUINumberProperty
 }
 
@@ -51,41 +51,45 @@ export default class AnimationLoop {
 		this._composer = props.composer;
 	}
 
-	get renderer(): THREE.Renderer { return this._renderer }
+	get renderer(): THREE.WebGLRenderer { return this._renderer }
+	get composer(): EffectComposer { return this._composer }
 	get timeAccelerator(): number { return this._timeAccelerator }
 	set timeAccelerator(v: number) { this._timeAccelerator = Math.max(0, v) }
 	get started() { return this._started }
 
 	start() {
 		if (!this._started) {
-			this._animate(0)
+			this._renderer.clear()
+			this._animate()
 			this._started = true
 		}
 	}
 
 	stop() {
 		if (this._started) {
-			cancelAnimationFrame(this._requestAnimationFrameID),
-				this._started = false
+			cancelAnimationFrame(this._requestAnimationFrameID)
+			this._started = false
 		}
 	}
 
 	render() {
-		this._renderer.autoClear = false;
-		this._renderer.clear();
-		this._scene.camera.obj3D.layers.set(1);
-		this._composer.render();
-		this._renderer.clearDepth();
-		this._scene.camera.obj3D.layers.set(0);
-		this._renderer.render(this._scene.obj3D, this._scene.camera.obj3D);
+		//this._renderer.clear()
+		const c: Camera | undefined = this._scene.camera
+		if (c) {
+			c.obj3D.layers.set(1)
+			this._composer.render()
+			this._renderer.clearDepth()
+			c.obj3D.layers.set(0)
+			this._renderer.render(this._scene.obj3D, c.obj3D)
+		}
 	}
 
-	private _animate(t: number) {
+	private _animate() {
 		this._requestAnimationFrameID = requestAnimationFrame(this._animate.bind(this))
-		const newTime = t / 1000
+		const newTime = this._clock.getElapsedTime()
 		const dt = (newTime - this._oldTime) * this._timeAccelerator
-		this._scene.renderingComputation(dt)
 		this._oldTime = newTime
+		this._scene.renderingComputation(dt)
 		this._stats.update()
 		this.render()
 	}
