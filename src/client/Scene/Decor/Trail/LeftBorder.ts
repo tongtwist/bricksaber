@@ -4,12 +4,12 @@ import { Border } from "../../../Templates"
 
 export default class LeftBorder extends Border {
 	constructor (parentGUIContainer: GUIContainer) {
-		const length = 50
+		const length = 40
 		super({
 			name: "LeftBorder",
 			length,
 			x: -2,
-			z: -(length / 2) - 10,
+			z: -(length / 2) - 10 - 1,
 			gui: { container: parentGUIContainer }
 		})
 	}

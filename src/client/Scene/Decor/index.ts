@@ -27,7 +27,7 @@ export default class Decor extends Group {
       const outside = new OutsideDecorSquare({
         name: `Outside Square ${i.toString()}`,
         y: 3,
-        z: -i * 5 - 20,
+        z: -i * (40 / 9) - 10 - 1,
         gui: { container: this._gui.container }
       })
       outside.obj3D.layers.enable(1)
