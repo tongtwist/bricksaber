@@ -87,6 +87,7 @@ export class App {
 			},
       textureLoader,
       gltfLoader,
+      audioPlayer,
 			gui: { container: gui }
     })
 
@@ -122,7 +123,6 @@ export class App {
     container.appendChild(stats.dom)
 
     window.addEventListener("resize", res._onWindowResize.bind(res), false)
-
     return res
   }
 }

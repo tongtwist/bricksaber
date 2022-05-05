@@ -30,7 +30,11 @@ export class Group extends SceneNode<ThreeGroup> {
 	get visible () { return this._obj3D.visible }
 	set visible (v: boolean) { this._obj3D.visible = v }
 
-	renderingComputation(dt: number) {
-		this.childrenRenderingComputations(dt)
+	renderingComputation(
+		t: number,
+		dt: number,
+		audioTime: number
+	) {
+		this.childrenRenderingComputations(t, dt, audioTime)
 	}
 }

@@ -11,6 +11,7 @@ export interface ITrack {
 	readonly beatsPerMinute: number
 	readonly songTimeOffset: number
 	readonly songFilename: string
+	readonly songUrl: string
 	readonly coverImageFilename: string
 	readonly difficultyBeatmapSets: { [difficulty: string]: ITrackDifficultyBeatmap }
 	loadBeatmaps (url: string): Promise<void>
@@ -32,6 +33,7 @@ export class Track
 	implements ITrack
 {
 	constructor (
+		private readonly _baseURL: string,
 		private readonly _version: string,
 		private readonly _songName: string,
 		private readonly _beatsPerMinute: number,
@@ -41,13 +43,15 @@ export class Track
 		private readonly _difficultyBeatmapSets: { readonly [difficulty: string]: ITrackDifficultyBeatmap }
 	) {}
 
-	get version (): string { return this._version }
-	get songName (): string { return this._songName }
-	get beatsPerMinute (): number { return this._beatsPerMinute }
-	get songTimeOffset (): number { return this._songTimeOffset }
-	get songFilename (): string { return this._songFilename }
-	get coverImageFilename (): string { return this._coverImageFilename }
-	get difficultyBeatmapSets (): { readonly [difficulty: string]: ITrackDifficultyBeatmap } { return this._difficultyBeatmapSets}
+	get baseURL () { return this._baseURL }
+	get version () { return this._version }
+	get songName () { return this._songName }
+	get beatsPerMinute () { return this._beatsPerMinute }
+	get songTimeOffset () { return this._songTimeOffset }
+	get songFilename () { return this._songFilename }
+	get songUrl () { return `${this._baseURL}${this._songFilename}` }
+	get coverImageFilename () { return this._coverImageFilename }
+	get difficultyBeatmapSets () { return this._difficultyBeatmapSets}
 
 	async loadBeatmaps(url: string): Promise<void> {
 		for (const difficultyName in this._difficultyBeatmapSets) {
@@ -56,6 +60,7 @@ export class Track
 	}
 
 	static create (
+		baseUrl: string,
 		json: ITrackJR
 	): ITrack {
 		const difficultyBeatmapSets: { [difficulty: string]: ITrackDifficultyBeatmap } = {}
@@ -67,6 +72,7 @@ export class Track
 			})
 		}
 		return new Track(
+			baseUrl,
 			json._version,
 			json._songName,
 			json._beatsPerMinute,
@@ -78,12 +84,13 @@ export class Track
 	}
 
 	static async load(
-		url: string
+		name: string
 	): Promise<ITrack> {
-		const res = await fetch(`${url}/Info.json`)
+		const baseUrl = `/tracks/${name}/`
+		const res = await fetch(`${baseUrl}Info.json`)
 		const json: ITrackJR = await res.json()
-		const result: ITrack = Track.create(json)
-		await result.loadBeatmaps(url)
+		const result: ITrack = Track.create(baseUrl, json)
+		await result.loadBeatmaps(baseUrl)
 		return result
 	}
 }
@@ -94,4 +101,3 @@ export * from "./DifficultyBeatmap"
 export * from "./Block"
 export * from "./Bomb"
 export * from "./Wall"
-export * from "./BeatmapLoader"

@@ -8,7 +8,8 @@ import {
 	IGUINumberProperty,
 	IPropsWithGUIOptions,
 	IWithGUI,
-	WithGUI
+	WithGUI,
+	IAudioPlayer
 } from "."
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer"
 import { WebGLRenderer } from "three"
@@ -29,6 +30,7 @@ interface IAnimationLoopProps extends IPropsWithGUIOptions<IAnimationLoopGUIProp
 export default class AnimationLoop {
 	private readonly _renderer: WebGLRenderer
 	private readonly _scene: Scene
+	private readonly _audioPlayer: IAudioPlayer
 	private readonly _stats: Stats
 	private readonly _gui?: IWithGUI
 	private readonly _composer: EffectComposer
@@ -37,10 +39,12 @@ export default class AnimationLoop {
 	private _started: boolean = false
 	private _requestAnimationFrameID: number = 0
 	private _oldTime: number = 0
+	private _oldAudioTime: number = 0
 
 	constructor(props: IAnimationLoopProps) {
 		this._renderer = props.renderer
 		this._scene = props.scene
+		this._audioPlayer = this._scene.audioPlayer
 		this._stats = props.stats
 		this._gui = WithGUI.createAndApply(this, props, {
 			timeAccelerator: {
@@ -73,7 +77,6 @@ export default class AnimationLoop {
 	}
 
 	render() {
-		//this._renderer.clear()
 		const c: Camera | undefined = this._scene.camera
 		if (c) {
 			c.obj3D.layers.set(1)
@@ -89,7 +92,13 @@ export default class AnimationLoop {
 		const newTime = this._clock.getElapsedTime()
 		const dt = (newTime - this._oldTime) * this._timeAccelerator
 		this._oldTime = newTime
-		this._scene.renderingComputation(dt)
+		let audioTime = this._audioPlayer.currentTime
+		if (audioTime === this._oldTime) {
+			audioTime += dt
+		} else {
+			this._oldAudioTime = audioTime
+		}
+		this._scene.renderingComputation(newTime, dt, audioTime)
 		this._stats.update()
 		this.render()
 	}

@@ -1,45 +1,36 @@
-import * as THREE from "three";
-import { Direction, HitEvent } from "../../types";
-import { SceneNode } from "../SceneNode";
-import { IObstacle } from "./Obstacle";
+import * as THREE from "three"
+import { SceneNode } from "../SceneNode"
 
-type CubeType = "Blue" | "Red";
+
+type CubeType = "Blue" | "Red"
 
 interface ICubeOptions {
-  type: CubeType;
-  direction?: Direction;
-  geometry?: THREE.BufferGeometry;
+  type: CubeType
+  direction: number
+  geometry?: THREE.BufferGeometry
 }
 
-export class Cube extends SceneNode<THREE.Mesh> implements IObstacle {
+export class Cube extends SceneNode<THREE.Mesh> {
   constructor(private _options: ICubeOptions) {
     if (!_options.geometry) {
-      _options.geometry = Cube.getGeometry();
+      _options.geometry = Cube.getGeometry()
     }
 
-    const color = Cube.getColor(_options.type);
-    const material = new THREE.MeshBasicMaterial({ color });
-    const cube = new THREE.Mesh(_options.geometry, material);
-    super(cube);
+    const color = Cube.getColor(_options.type)
+    const material = new THREE.MeshBasicMaterial({ color })
+    const cube = new THREE.Mesh(_options.geometry, material)
+    super(cube)
   }
 
-  renderingComputation(time: number): void {
+  renderingComputation(
+    t: number,
+    dt: number,
+    audioTime: number
+  ): void {
     // Do nothing
   }
 
   explode() {}
-
-  handleHit(event: HitEvent): void {
-    //   Si les conditions sont respectées
-    //   Alors on appelle explode()
-    //   this.explode()
-    // throw new Error("Method not implemented.");
-
-    this.explode();
-  }
-
-  //   This could be developed later
-  //   cut() {}
 
   private static getColor(type: CubeType): THREE.Color {
     switch (type) {

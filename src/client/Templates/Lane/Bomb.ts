@@ -1,9 +1,8 @@
 import * as THREE from "three"
 import { SceneNode } from "../SceneNode"
-import { HitEvent } from "../../types"
-import { IObstacle } from "./Obstacle"
 
-export class Bomb extends SceneNode<THREE.Mesh> implements IObstacle {
+
+export class Bomb extends SceneNode<THREE.Mesh> {
   constructor() {
     const geometry = new THREE.SphereGeometry(0.4)
     const material = new THREE.MeshBasicMaterial({ color: 0x888888 })
@@ -12,13 +11,11 @@ export class Bomb extends SceneNode<THREE.Mesh> implements IObstacle {
     super(cube)
   }
 
-  renderingComputation(time: number): void {
+  renderingComputation(
+    t: number,
+    dt: number,
+    audioTime: number
+  ): void {
     // Do nothing
   }
-
-  handleHit(event: HitEvent): void {
-    this.explode()
-  }
-
-  explode() {}
 }

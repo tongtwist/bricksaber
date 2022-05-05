@@ -7,13 +7,13 @@ export class LaneGrid extends SceneNode<THREE.Group> {
     super(grid);
   }
 
-  // renderingComputation(dt: number): void {
+  // renderingComputation(t: number, dt: number, audioTime: number): void {
   //   // const speed = this._bpm / 60
   //   // const deltaZ = speed * dt;
 
   //   // this.obj3D.position.z += deltaZ;
 
-  //   this.childrenRenderingComputations(dt);
+  //   this.childrenRenderingComputations(t, dt, audioTime);
   // }
 
   addToCell(child: ISceneNode, positionX: number, positionY: number) {
