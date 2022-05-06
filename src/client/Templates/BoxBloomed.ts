@@ -52,6 +52,7 @@ export interface IBoxBloomedProps extends IPropsWithGUIOptions<IBoxBloomedGUIPro
 	readonly xScale?: number
 	readonly yScale?: number
 	readonly zScale?: number
+	readonly bloom?: number
 }
 
 export class BoxBloomed extends SceneNode<Mesh> {
@@ -79,7 +80,8 @@ export class BoxBloomed extends SceneNode<Mesh> {
 		this._initialWidth = initialWidth
 		this._initialHeight = initialHeight
 		this._initialLength = initialLength
-		this._obj3D.layers.enable(1)
+
+		this._obj3D.layers.enable(props.bloom ?? 1)
 		typeof props.x === "number" && (this._obj3D.position.x = props.x)
 		typeof props.y === "number" && (this._obj3D.position.y = props.y)
 		typeof props.z === "number" && (this._obj3D.position.z = props.z)
