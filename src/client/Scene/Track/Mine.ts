@@ -39,7 +39,7 @@ export class Mine extends SceneNode<Mesh> {
         )
     );
 
-    mineModel.scene.scale.set(0.5, 0.5, 0.5);
+    mineModel.scene.scale.set(0.3, 0.3, 0.3);
 
     this.model = mineModel.scene;
   }

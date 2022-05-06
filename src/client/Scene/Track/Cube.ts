@@ -90,10 +90,10 @@ export class Cube extends SceneNode<Mesh> {
           )}`
         )
     );
-    redCenterCubeModel.scene.scale.set(0.5, 0.5, 0.5);
-    redDirectionalCubeModel.scene.scale.set(0.5, 0.5, 0.5);
-    blueCenterCubeModel.scene.scale.set(0.5, 0.5, 0.5);
-    blueDirectionalCubeModel.scene.scale.set(0.5, 0.5, 0.5);
+    redCenterCubeModel.scene.scale.set(0.3, 0.3, 0.3);
+    redDirectionalCubeModel.scene.scale.set(0.3, 0.3, 0.3);
+    blueCenterCubeModel.scene.scale.set(0.3, 0.3, 0.3);
+    blueDirectionalCubeModel.scene.scale.set(0.3, 0.3, 0.3);
 
     // const light = new THREE.PointLight(0xffffff, 1, 4);
     // redCenterCubeModel.scene.add(light.clone());
