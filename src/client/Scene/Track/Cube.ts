@@ -94,14 +94,14 @@ export class Cube extends SceneNode<Mesh> {
     redDirectionalCubeModel.scene.scale.set(0.5, 0.5, 0.5);
     blueCenterCubeModel.scene.scale.set(0.5, 0.5, 0.5);
     blueDirectionalCubeModel.scene.scale.set(0.5, 0.5, 0.5);
-	
-    const light = new THREE.PointLight(0xffffff, 1, 4);
-    redCenterCubeModel.scene.add(light);
-    redDirectionalCubeModel.scene.add(light);
-    blueCenterCubeModel.scene.add(light);
-    blueDirectionalCubeModel.scene.add(light);
-	
-    this.redCenterCubeModel = redCenterCubeModel.scene.clone();
+
+    // const light = new THREE.PointLight(0xffffff, 1, 4);
+    // redCenterCubeModel.scene.add(light.clone());
+    // redDirectionalCubeModel.scene.add(light.clone());
+    // blueCenterCubeModel.scene.add(light.clone());
+    // blueDirectionalCubeModel.scene.add(light.clone());
+
+    this.redCenterCubeModel = redCenterCubeModel.scene;
     this.redCenterCubeModel.traverse((object) => {
       if (object.type === "Mesh") {
         //@ts-ignore
@@ -110,7 +110,7 @@ export class Cube extends SceneNode<Mesh> {
       }
     });
 
-    this.redDirectionalCubeModel = redDirectionalCubeModel.scene.clone();
+    this.redDirectionalCubeModel = redDirectionalCubeModel.scene;
     this.redDirectionalCubeModel.traverse((object) => {
       if (object.type === "Mesh") {
         //@ts-ignore
@@ -119,7 +119,7 @@ export class Cube extends SceneNode<Mesh> {
       }
     });
 
-    this.blueCenterCubeModel = blueCenterCubeModel.scene.clone();
+    this.blueCenterCubeModel = blueCenterCubeModel.scene;
     this.blueCenterCubeModel.traverse((object) => {
       if (object.type === "Mesh") {
         //@ts-ignore
@@ -128,7 +128,7 @@ export class Cube extends SceneNode<Mesh> {
       }
     });
 
-    this.blueDirectionalCubeModel = blueDirectionalCubeModel.scene.clone();
+    this.blueDirectionalCubeModel = blueDirectionalCubeModel.scene;
     this.blueDirectionalCubeModel.traverse((object) => {
       if (object.type === "Mesh") {
         //@ts-ignore

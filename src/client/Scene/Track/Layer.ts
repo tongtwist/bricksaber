@@ -7,6 +7,7 @@ import {
 } from "../../Components";
 import { Group } from "../../Templates";
 import { Cube } from "./Cube";
+import { Mine } from "./Mine";
 import { Wall } from "./Wall";
 
 export interface ITrackLayerProps extends IPropsWithGUIOptions {
@@ -30,10 +31,11 @@ export class TrackLayer extends Group {
 		})
 		this._walls = props.walls.map(Wall.fromBM)
 		this._cubes = props.cubes.map(Cube.fromBM)
-		this._mines = []
+		this._mines = props.mines.map(Mine.fromBM)
 		this._obj3D.position.z = props.z
 		this._obj3D.position.y = 2
     this.add(...this._cubes);
+    this.add(...this._mines);
 		//this._layerHelper()
     this.add(...this._walls);
   }

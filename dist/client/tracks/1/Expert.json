@@ -13,6 +13,13 @@
     },
     {
       "_time": 3.9270829999999997,
+      "_lineIndex": 3,
+      "_lineLayer": 2,
+      "_type": 3,
+      "_cutDirection": 3
+    },
+    {
+      "_time": 3.9270829999999997,
       "_lineIndex": 1,
       "_lineLayer": 0,
       "_type": 1,

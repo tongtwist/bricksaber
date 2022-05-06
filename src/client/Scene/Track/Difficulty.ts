@@ -98,6 +98,7 @@ export class TrackDifficulty extends Group {
           if (elt instanceof BeatmapBlock) {
             p.cubes.push(elt);
           } else if (elt instanceof BeatmapBomb) {
+			  console.log(elt)
             p.mines.push(elt);
           } else if (elt instanceof BeatmapWall) {
             p.walls.push(elt);

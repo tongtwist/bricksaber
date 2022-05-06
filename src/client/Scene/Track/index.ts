@@ -10,6 +10,7 @@ import {
 import { Group } from "../../Templates";
 import { Cube } from "./Cube";
 import { ITrackDifficultyProps, TrackDifficulty } from "./Difficulty";
+import { Mine } from "./Mine";
 
 export interface ITrackGUIProps extends GUIProperties {
   readonly visible: IGUIBooleanProperty;
@@ -48,6 +49,7 @@ export default class Track extends Group {
   ): Promise<Track> {
     const bmTrack = await BMTrack.load(trackName);
     await Cube._loadModels(gltfLoader);
+    await Mine._loadModel(gltfLoader);
 
     const result = new Track({
       name: `Track ${trackName}`,
