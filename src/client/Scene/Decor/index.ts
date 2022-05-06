@@ -1,7 +1,7 @@
 import type { GUIContainer } from "../../Components"
+import { Border, OutsideDecorSquare } from "../../Templates/Decor"
 import {
   Group,
-  OutsideDecorSquare
 } from "../../Templates"
 import Trail from "./Trail"
 import { PlayerPlatform } from "./Platform"
@@ -12,6 +12,7 @@ export default class Decor extends Group {
   private readonly _track: PlayerPlatform
   private readonly _trail: Trail
   private readonly _outsideSquares: Array<OutsideDecorSquare>
+  private readonly _outsideSticks: Array<Border>
 
   private constructor(
     parentGUIContainer: GUIContainer
@@ -33,7 +34,40 @@ export default class Decor extends Group {
       outside.obj3D.layers.enable(1)
       this._outsideSquares.push(outside)
     }
-    this.add(this._track, this._trail, ...this._outsideSquares)
+
+    //TO REFACTO
+    this._outsideSticks = [];
+    for(let i = 1; i < 6; i++) {
+      const outside = new Border({
+        name: `Outside Stick ${i.toString()}`,
+        width:4,
+        x: 15 + i,
+        y: 0 + i,
+        z: -5 - i * i * 2 ,
+        color: 0xff0000,
+        gui: { container: this._gui.container }
+      })
+      outside.obj3D.rotation.z = 7 + i * 0.115
+      outside.obj3D.layers.enable(1)
+      this._outsideSticks.push(outside)
+    }
+
+    for(let i = 1; i < 6; i++) {
+      const outside = new Border({
+        name: `Outside Stick ${i.toString()}${i.toString()}`,
+        width:4,
+        x: -15 - i,
+        y: 0 - i,
+        z: -5 - i * i * 2 ,
+        color: 0xff0000,
+        gui: { container: this._gui.container }
+      })
+      outside.obj3D.rotation.z = -8 + i * 0.115
+      outside.obj3D.layers.enable(1)
+      this._outsideSticks.push(outside)
+    }    
+
+    this.add(this._track, this._trail, ...this._outsideSquares,...this._outsideSticks)
   }
 
   get track () { return this._track }

@@ -1,15 +1,15 @@
 import type { GUIContainer } from "../../../Components"
-import { Border } from "../../../Templates"
+import { Border } from "../../../Templates/Decor"
 
 
 export default class LeftBorder extends Border {
 	constructor (parentGUIContainer: GUIContainer) {
-		const length = 40
+		const length = 55
 		super({
 			name: "RightBorder",
 			length,
 			x: 2,
-			z: -(length / 2) - 10 - 1,
+			z: -(length / 2) - 3.5,
 			gui: { container: parentGUIContainer }
 		})
 	}

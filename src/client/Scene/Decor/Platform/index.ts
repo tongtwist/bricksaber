@@ -4,6 +4,7 @@ import LeftBorder from "./LeftBorder"
 import RightBorder from "./RightBorder"
 import TopBorder from "./TopBorder"
 import BottomBorder from "./BottomBorder"
+import { Ground } from "./Ground"
 
 
 export class PlayerPlatform extends Group {
@@ -11,6 +12,7 @@ export class PlayerPlatform extends Group {
 	private readonly _rightBorder: RightBorder
 	private readonly _topBorder: TopBorder
 	private readonly _bottomBorder: BottomBorder
+	private readonly _ground: Ground
 
 	constructor(parentGUIContainer: GUIContainer) {
 		super({
@@ -21,11 +23,13 @@ export class PlayerPlatform extends Group {
 		this._rightBorder = new RightBorder(this._gui.container)
 		this._topBorder = new TopBorder(this._gui.container)
 		this._bottomBorder = new BottomBorder(this._gui.container)
+		this._ground = new Ground(this._gui.container)
 		this.add(
 			this._leftBorder,
 			this._rightBorder,
 			this._topBorder,
-			this._bottomBorder
+			this._bottomBorder,
+			this._ground
 		)
 	}
 	get leftBorder () { return this._leftBorder }
