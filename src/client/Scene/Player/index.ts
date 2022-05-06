@@ -58,11 +58,11 @@ export default class Player extends Group {
       Body.create({
         name: "Body",
         gui: { container: result._gui.container }
-      }),
+      }, gltfLoader),
       Head.create({
         name: "Head",
         gui: { container: result._gui.container }
-      }),
+      }, gltfLoader),
       LeftSaber.create({
         name: "Left Saber",
         gui: { container: result._gui.container }
@@ -72,6 +72,19 @@ export default class Player extends Group {
         gui: { container: result._gui.container }
       }, gltfLoader)
     ])
+    head.obj3D.rotation.x = 1.5
+    head.obj3D.rotation.y = 3.150
+    head.obj3D.scale.x = 0.8
+    head.obj3D.scale.y = 0.8
+    head.obj3D.scale.z = 0.8
+
+    body.obj3D.scale.x = 0.01
+    body.obj3D.scale.y = 0.01
+    body.obj3D.scale.z = 0.01
+
+    body.obj3D.rotation.x =-1.5
+
+    console.log("body",body)
     result._setChildren({ body, head, leftSaber, rightSaber })
     result._leftSaber!.obj3D.position.x = -1.2
     result._leftSaber!.obj3D.rotation.x = -2 * Math.PI / 6
