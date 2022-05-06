@@ -8,8 +8,12 @@ export default class Camera extends PerspectiveCamera {
 	private constructor (
 		props: IPerspectiveCameraProps
 	) {
-		super({...props, x: props.x ?? 6, y: props.y ?? 6, z: props.z ?? 10})
-		this._obj3D.lookAt(0, 1, -51)
+		super({
+			...props,
+			x: props.x ?? 3,
+			y: props.y ?? 3,
+			z: props.z ?? 8
+		})
 	}
 
 	static async create (

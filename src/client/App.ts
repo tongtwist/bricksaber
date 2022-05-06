@@ -18,6 +18,7 @@ import Scene from "./Scene"
 import {
   IPropsWithGUIOptions,
   IWithGUI,
+  Track,
   WithGUI,
   IAudioPlayer,
   AudioPlayer
@@ -86,6 +87,7 @@ export class App {
 			},
       textureLoader,
       gltfLoader,
+      audioPlayer,
 			gui: { container: gui }
     })
 
@@ -121,7 +123,18 @@ export class App {
     container.appendChild(stats.dom)
 
     window.addEventListener("resize", res._onWindowResize.bind(res), false)
-
     return res
   }
 }
+
+/*const cube = new Cube("Blue");
+    // const cube2 = new Cube("Red");
+    // scene.add(cube2);
+    // scene.add(cube);
+
+    const bomb = new Bomb();
+    const grid = new Grid();
+    bomb.threeObject.position.x = 4;
+    grid.add(bomb);
+    grid.add(cube);
+    scene.add(grid);*/

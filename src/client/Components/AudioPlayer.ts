@@ -13,7 +13,9 @@ export class AudioPlayer
 {
 	private constructor (
 		private readonly _mediaPlayer: HTMLAudioElement
-	) {}
+	) {
+		this._mediaPlayer.autoplay = false
+	}
 
 	get source (): string { return this._mediaPlayer.src }
 	set source (src: string) { this._mediaPlayer.src = src }
