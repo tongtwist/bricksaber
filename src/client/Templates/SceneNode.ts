@@ -4,7 +4,7 @@ import type { Object3D } from "three"
 export interface ISceneNode<T extends Object3D = Object3D> {
 	readonly name?: string
 	readonly obj3D: T
-	renderingComputation?: (dt: number) => void
+	renderingComputation?: (t: number, dt: number, audioTime: number) => void
 	add(...children: Array<ISceneNode>): void
 }
 
@@ -24,9 +24,13 @@ export abstract class SceneNode<T extends Object3D>
 
 	get obj3D () { return this._obj3D }
 
-	protected childrenRenderingComputations (dt: number) {
+	protected childrenRenderingComputations (
+		t: number,
+		dt: number,
+		audioTime: number
+	) {
 		this._childrenWithComputations.forEach((child: ISceneNodeWithRenderingComputation) => {
-			child.renderingComputation(dt)
+			child.renderingComputation(t, dt, audioTime)
 		})
 	}
 
