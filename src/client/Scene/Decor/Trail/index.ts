@@ -6,6 +6,9 @@ import RightBorder from "./RightBorder";
 import LeftBorderColumn from "./LeftBorderColumn";
 import RightBorderColumn from "./RightBorderColumn";
 import Platfrom from "./Platform";
+import LeftSupportPlatform from "./LeftSupportPlatform";
+import RightSupportPlatform from "./RightSupportPlatform";
+
 
 export default class Trail extends Group {
   private readonly _leftBorderTrail: LeftBorder;
@@ -13,6 +16,8 @@ export default class Trail extends Group {
   private readonly _leftBorderColumnTrail: RightBorder;
   private readonly _rightBorderColumnTrail: RightBorder;
   private readonly _platformTrail: Platfrom;
+  private readonly _leftSupportPlatform: LeftSupportPlatform;
+  private readonly _rightSupportPlatform: RightSupportPlatform;
 
   constructor(parentGUIContainer: GUIContainer) {
     super({ name: "Piste", gui: { container: parentGUIContainer } });
@@ -21,12 +26,16 @@ export default class Trail extends Group {
     this._leftBorderColumnTrail = new LeftBorderColumn(this._gui.container);
     this._rightBorderColumnTrail = new RightBorderColumn(this._gui.container);
     this._platformTrail = new Platfrom(this._gui.container);
+    this._leftSupportPlatform = new LeftSupportPlatform(this._gui.container);
+    this._rightSupportPlatform = new RightSupportPlatform(this._gui.container);
     this.add(
       this._leftBorderTrail,
       this._rightBorderTrail,
       this._leftBorderColumnTrail,
       this._rightBorderColumnTrail,
-      this._platformTrail
+      this._platformTrail,
+      this._leftSupportPlatform,
+      this._rightSupportPlatform,
     );
   }
 }
