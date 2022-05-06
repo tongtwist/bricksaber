@@ -118,7 +118,7 @@ export default class Scene extends SceneNode<ThreeScene> {
 			Axes.create(result._gui.container),
 			Player.create(result._gui.container, props.gltfLoader),
 			Decor.create(result._gui.container, props.gltfLoader),
-			SceneTrack.create("1", result._gui.container)
+			SceneTrack.create("1", result._gui.container, props.gltfLoader)
 		])
 		result._setChildren({ camera, ambientLight, grid, axes, player, decor, firstTrack })
 		result._player!.obj3D.position.y = 1.25

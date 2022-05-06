@@ -1,60 +1,165 @@
 import {
-	BoxBufferGeometry,
-	Mesh,
-	MeshBasicMaterial
-} from "three"
-import { SceneNode } from "../../Templates"
-import type { IBeatmapBlock } from "../../Components"
-
+  BoxBufferGeometry,
+  Color,
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+} from "three";
+import { SceneNode } from "../../Templates";
+import type { IBeatmapBlock } from "../../Components";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import * as THREE from "three";
 
 export interface ICubeProps {
-	readonly x: number
-	readonly y: number
-	readonly rotation: number
-	readonly m: Mesh
+  readonly x: number;
+  readonly y: number;
+  readonly rotation: number;
+  // TODO use proper type
+  readonly m: any;
 }
 
 export class Cube extends SceneNode<Mesh> {
-	private static _rotations = [
-		Math.PI,
-		0,
-		-.5 * Math.PI,
-		.5 * Math.PI,
-		-.75 * Math.PI,
-		.75 * Math.PI,
-		-.25 * Math.PI,
-		.25 * Math.PI,
-		0
-	]
-	private static _cubeGeometry = new BoxBufferGeometry(0.8, 0.8, 0.8)
-	private static _bm = new Mesh(
-		Cube._cubeGeometry,
-		new MeshBasicMaterial({ color: 0x0000ff })
-	)
-	private static _rm = new Mesh(
-		Cube._cubeGeometry,
-		new MeshBasicMaterial({ color: 0xff0000 })
-	)
+  private static _rotations = [
+    Math.PI,
+    0,
+    -0.5 * Math.PI,
+    0.5 * Math.PI,
+    -0.75 * Math.PI,
+    0.75 * Math.PI,
+    -0.25 * Math.PI,
+    0.25 * Math.PI,
+    0,
+  ];
+  private static _cubeGeometry = new BoxBufferGeometry(0.8, 0.8, 0.8);
+  private static _bm = new Mesh(
+    Cube._cubeGeometry,
+    new MeshBasicMaterial({ color: 0x0000ff })
+  );
+  private static _rm = new Mesh(
+    Cube._cubeGeometry,
+    new MeshBasicMaterial({ color: 0xff0000 })
+  );
+  static redCenterCubeModel: Group;
+  static redDirectionalCubeModel: Group;
+  static blueCenterCubeModel: Group;
+  static blueDirectionalCubeModel: Group;
 
-	private constructor (
-		props: ICubeProps
-	) {
-		super(props.m)
-		this._obj3D.position.x = props.x
-		this._obj3D.position.y = props.y
-		this._obj3D.rotation.z = props.rotation
-	}
+  private constructor(props: ICubeProps) {
+    super(props.m);
+    this._obj3D.position.x = props.x;
+    this._obj3D.position.y = props.y;
+    this._obj3D.rotation.z = props.rotation;
+  }
 
-	static fromBM (
-		block: IBeatmapBlock
-	): Cube {
-		return new Cube({
-			x: block.lineIndex - 1.5,
-			y: block.lineLayer - 1,
-			rotation: Cube._rotations[
-				Math.min(8, Math.max(0, block.cutDirection))
-			],
-			m: block.type === 0 ? Cube._bm.clone() : Cube._rm.clone()
-		})
-	}
+  public static async _loadModels(gltfLoader: GLTFLoader): Promise<void> {
+    const redColor = new Color(0xff0000);
+    const blueColor = new Color(0x0000ff);
+    const redCenterCubeModel = await gltfLoader.loadAsync(
+      "/assets/models/centerCube.gltf",
+      (progress) =>
+        console.log(
+          `Scene->Track->"centerCube": model load progress: ${JSON.stringify(
+            progress
+          )}`
+        )
+    );
+    const blueCenterCubeModel = await gltfLoader.loadAsync(
+      "/assets/models/centerCube.gltf",
+      (progress) =>
+        console.log(
+          `Scene->Track->"centerCube": model load progress: ${JSON.stringify(
+            progress
+          )}`
+        )
+    );
+    const redDirectionalCubeModel = await gltfLoader.loadAsync(
+      "/assets/models/directionalCube.gltf",
+      (progress) =>
+        console.log(
+          `Scene->Track->"directionalCube": model load progress: ${JSON.stringify(
+            progress
+          )}`
+        )
+    );
+    const blueDirectionalCubeModel = await gltfLoader.loadAsync(
+      "/assets/models/directionalCube.gltf",
+      (progress) =>
+        console.log(
+          `Scene->Track->"directionalCube": model load progress: ${JSON.stringify(
+            progress
+          )}`
+        )
+    );
+    redCenterCubeModel.scene.scale.set(0.5, 0.5, 0.5);
+    redDirectionalCubeModel.scene.scale.set(0.5, 0.5, 0.5);
+    blueCenterCubeModel.scene.scale.set(0.5, 0.5, 0.5);
+    blueDirectionalCubeModel.scene.scale.set(0.5, 0.5, 0.5);
+	
+    const light = new THREE.PointLight(0xffffff, 1, 4);
+    redCenterCubeModel.scene.add(light);
+    redDirectionalCubeModel.scene.add(light);
+    blueCenterCubeModel.scene.add(light);
+    blueDirectionalCubeModel.scene.add(light);
+	
+    this.redCenterCubeModel = redCenterCubeModel.scene.clone();
+    this.redCenterCubeModel.traverse((object) => {
+      if (object.type === "Mesh") {
+        //@ts-ignore
+        const material = object.material;
+        material.color = redColor;
+      }
+    });
+
+    this.redDirectionalCubeModel = redDirectionalCubeModel.scene.clone();
+    this.redDirectionalCubeModel.traverse((object) => {
+      if (object.type === "Mesh") {
+        //@ts-ignore
+        const material = object.material;
+        material.color = redColor;
+      }
+    });
+
+    this.blueCenterCubeModel = blueCenterCubeModel.scene.clone();
+    this.blueCenterCubeModel.traverse((object) => {
+      if (object.type === "Mesh") {
+        //@ts-ignore
+        const material = object.material;
+        material.color = blueColor;
+      }
+    });
+
+    this.blueDirectionalCubeModel = blueDirectionalCubeModel.scene.clone();
+    this.blueDirectionalCubeModel.traverse((object) => {
+      if (object.type === "Mesh") {
+        //@ts-ignore
+        const material = object.material;
+        material.color = blueColor;
+      }
+    });
+  }
+
+  static getModel(cutDirection: number, type: number) {
+    if (cutDirection === 8) {
+      if (type === 0) {
+        return this.blueCenterCubeModel.clone();
+      }
+
+      return this.redCenterCubeModel.clone();
+    }
+
+    if (type === 0) {
+      return this.blueDirectionalCubeModel.clone();
+    }
+
+    return this.redDirectionalCubeModel.clone();
+  }
+
+  static fromBM(block: IBeatmapBlock): Cube {
+    return new Cube({
+      x: block.lineIndex - 1.5,
+      y: block.lineLayer - 1,
+      rotation: Cube._rotations[Math.min(8, Math.max(0, block.cutDirection))],
+      m: Cube.getModel(block.cutDirection, block.type),
+    });
+  }
 }
