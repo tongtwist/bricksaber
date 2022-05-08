@@ -3,8 +3,7 @@ import {
 	Scene,
 	Layers,
 	Vector2,
-	WebGLRenderer,
-	ShaderMaterial
+	WebGLRenderer
 } from "three"
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer"
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'

@@ -1,27 +1,24 @@
 import {
-  Group,
-  Object3D,
   WebGLRenderer,
-  TextureLoader
+  TextureLoader,
+  sRGBEncoding,
+  Group
 } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import Stats from "three/examples/jsm/libs/stats.module"
 import { GUI } from "dat.gui"
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
-import {
-  GLTF,
-  GLTFLoader
-} from "three/examples/jsm/loaders/GLTFLoader"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 
 import AnimationLoop from "./Components/AnimationLoop"
 import Scene from "./Scene"
 import {
   IPropsWithGUIOptions,
   IWithGUI,
-  Track,
   WithGUI,
   IAudioPlayer,
-  AudioPlayer
+  AudioPlayer,
+  VR
 } from "./Components"
 import PostProcessing from "./Components/PostProcessing"
 import Camera from "./Scene/Camera"
@@ -30,18 +27,21 @@ import Camera from "./Scene/Camera"
 interface IAppProps extends IPropsWithGUIOptions {
   readonly scene: Scene
   readonly animationLoop: AnimationLoop
+  readonly vr: VR
   readonly gltfLoader: GLTFLoader
 }
 
 export class App {
   private readonly _scene: Scene
   private readonly _animationLoop: AnimationLoop
+  private readonly _vr: VR
   private readonly _gltfLoader: GLTFLoader
   private readonly _gui: IWithGUI
 
   private constructor (props: IAppProps) {
     this._scene = props.scene
     this._animationLoop = props.animationLoop
+    this._vr = props.vr
     this._gltfLoader = props.gltfLoader
     this._gui = WithGUI.createAndApply(this, props)
   }
@@ -74,7 +74,14 @@ export class App {
 		renderer.setSize(window.innerWidth, window.innerHeight)
 		renderer.shadowMap.enabled = true
     renderer.autoClear = false
-
+    renderer.outputEncoding = sRGBEncoding
+    
+    const vr = VR.create({
+      renderer,
+      container,
+      onVRStarted: console.log,
+      onVREnded: console.log
+    })
     const gui = new GUI()
     const textureLoader = new TextureLoader()
     const gltfLoader = new GLTFLoader()
@@ -88,12 +95,17 @@ export class App {
       textureLoader,
       gltfLoader,
       audioPlayer,
+      vr,
 			gui: { container: gui }
     })
 
     const stats = Stats()
 
     new OrbitControls(scene.camera!.obj3D, renderer.domElement)
+
+    const controller1: Group = renderer.xr.getController(0)
+    const controller2: Group = renderer.xr.getController(1)
+    scene.obj3D.add(controller1, controller2)
 
     const postProcessing: PostProcessing = new PostProcessing({
       name: "PostProcessing",
@@ -116,6 +128,7 @@ export class App {
       scene,
       animationLoop,
       gltfLoader,
+      vr,
       gui: { container: gui }
     })
 
@@ -126,15 +139,3 @@ export class App {
     return res
   }
 }
-
-/*const cube = new Cube("Blue");
-    // const cube2 = new Cube("Red");
-    // scene.add(cube2);
-    // scene.add(cube);
-
-    const bomb = new Bomb();
-    const grid = new Grid();
-    bomb.threeObject.position.x = 4;
-    grid.add(bomb);
-    grid.add(cube);
-    scene.add(grid);*/

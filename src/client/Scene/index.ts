@@ -9,7 +9,8 @@ import {
 	WithGUI,
 	IWithGUI,
 	IPropsWithGUIOptions,
-	IAudioPlayer
+	IAudioPlayer,
+	VR
 } from "../Components"
 import { SceneNode } from "../Templates"
 import Camera from "./Camera"
@@ -29,6 +30,7 @@ export interface ISceneProps extends IPropsWithGUIOptions {
 	readonly textureLoader: TextureLoader
 	readonly gltfLoader: GLTFLoader
 	readonly audioPlayer: IAudioPlayer
+	readonly vr: VR
 }
 
 interface ISceneChildren {
@@ -111,7 +113,7 @@ export default class Scene extends SceneNode<ThreeScene> {
 				fov: 55,
 				aspect: props.viewport.initialWidth / Math.max(props.viewport.initialHeight, 1),
 				near: 0.1,
-				far: 200,
+				far: 200
 			}),
 			AmbientLight.create(result._gui.container),
 			Grid.create(result._gui.container),
@@ -122,7 +124,6 @@ export default class Scene extends SceneNode<ThreeScene> {
 		])
 		result._setChildren({ camera, ambientLight, grid, axes, player, decor, firstTrack })
 		result._player!.obj3D.position.y = 1.25
-		console.log(firstTrack)
 		result._audioPlayer.play(firstTrack.bmTrack.songUrl)
 		return result
 	}

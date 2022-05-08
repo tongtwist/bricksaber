@@ -84,7 +84,6 @@ export default class Player extends Group {
 
     body.obj3D.rotation.x =-1.5
 
-    console.log("body",body)
     result._setChildren({ body, head, leftSaber, rightSaber })
     result._leftSaber!.obj3D.position.x = -1.2
     result._leftSaber!.obj3D.rotation.x = -2 * Math.PI / 6

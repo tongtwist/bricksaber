@@ -1,81 +1,84 @@
-import {Mesh, BoxGeometry, MeshLambertMaterial, Color, Group} from "three";
-import type { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
+import {
+  Mesh,
+  Group
+} from "three"
+import type {
+  GLTF,
+  GLTFLoader
+} from "three/examples/jsm/loaders/GLTFLoader"
 
 import {
   GUIProperties,
   IGUIBooleanProperty,
   IGUINumberProperty,
-  IGUIColorProperty,
   IPropsWithGUIOptions,
   IWithGUI,
   WithGUI,
-} from "../../Components";
-import {SceneNode} from "../../Templates/SceneNode";
+} from "../../Components"
+import { SceneNode } from "../../Templates/SceneNode"
 
 export interface IPlayerBodyGUIProperties extends GUIProperties {
-  readonly visible: IGUIBooleanProperty;
-  readonly width: IGUINumberProperty;
-  readonly height: IGUINumberProperty;
-  readonly length: IGUINumberProperty;
+  readonly visible: IGUIBooleanProperty
+  readonly width: IGUINumberProperty
+  readonly height: IGUINumberProperty
+  readonly length: IGUINumberProperty
 }
 
 export interface IPlayerBodyProps
-  extends IPropsWithGUIOptions<IPlayerBodyGUIProperties> {
-  readonly visible?: boolean;
-  readonly width?: number;
-  readonly height?: number;
-  readonly length?: number;
+  extends IPropsWithGUIOptions<IPlayerBodyGUIProperties>
+{
+  readonly visible?: boolean
+  readonly width?: number
+  readonly height?: number
+  readonly length?: number
 }
 
 export default class Body extends SceneNode<Group> {
-  private readonly _initialWidth: number;
-  private readonly _initialHeight: number;
-  private readonly _initialLength: number;
-  protected readonly _gui: IWithGUI;
+  private readonly _initialWidth: number
+  private readonly _initialHeight: number
+  private readonly _initialLength: number
+  protected readonly _gui: IWithGUI
 
   private constructor(props: IPlayerBodyProps) {
-    const initialWidth = props.width ?? 1;
-    const initialHeight = props.height ?? 1.5;
-    const initialLength = props.length ?? 1;
-    super(new Group());
-    this._initialWidth = initialWidth;
-    this._initialHeight = initialHeight;
-    this._initialLength = initialLength;
+    super(new Group())
+    this._initialWidth = props.width ?? 1
+    this._initialHeight = props.height ?? 1.5
+    this._initialLength = props.length ?? 1
     this._gui = WithGUI.createAndApply(this, props, {
       visible: {type: "boolean"},
       width: {type: "number", min: 0, max: 5, step: 0.05},
       height: {type: "number", min: 0.05, max: 1, step: 0.05},
       length: {type: "number", min: 10, max: 200, step: 0.1},
-    });
+    })
   }
 
   private _setChildren(child: Mesh) {
-    this.obj3D.add(child);
+    this.obj3D.add(child)
   }
 
   get visible() {
-    return this._obj3D.visible;
+    return this._obj3D.visible
   }
   set visible(v: boolean) {
-    this._obj3D.visible = v;
+    this._obj3D.visible = v
   }
   get width() {
-    return this._obj3D.scale.x * this._initialWidth;
+    return this._obj3D.scale.x * this._initialWidth
   }
   set width(x: number) {
-    this._obj3D.scale.x = x / this._initialWidth;
+    this._obj3D.scale.x = x / this._initialWidth
   }
   get height() {
-    return this._obj3D.scale.y * this._initialHeight;
+    return this._obj3D.scale.y * this._initialHeight
   }
   set height(y: number) {
-    this._obj3D.scale.y = y / this._initialHeight;
+    this._obj3D.scale.y = y / this._initialHeight
   }
   get length() {
-    return this._obj3D.scale.z * this._initialLength;
+    return this._obj3D.scale.z * this._initialLength
   }
   set length(y: number) {
-    this._obj3D.scale.z = y / this._initialLength;
+    this._obj3D.scale.z = y / this._initialLength
   }
 
 
@@ -90,21 +93,21 @@ export default class Body extends SceneNode<Group> {
           progress
         )}`
       )
-    );
-	const resultat: Mesh = model.scene.children[0].children[0].children[0] as Mesh;
-    this._setChildren(resultat);
+    )
+	const resultat: Mesh = model.scene.children[0].children[0].children[0] as Mesh
+    this._setChildren(resultat)
   }
 
   static async create(
     props: IPlayerBodyProps,
     gltfLoader: GLTFLoader
   ): Promise<Body> {
-    const result = new Body(props);
+    const result = new Body(props)
     await result._loadModel(
       gltfLoader,
       "/assets/models/bodyspider.gltf",
       props.name
-    );
-    return result;
+    )
+    return result
   }
 }
