@@ -1,6 +1,5 @@
 import {
 	Scene as ThreeScene,
-	Fog,
 	TextureLoader
 } from "three"
 import type { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
@@ -20,6 +19,7 @@ import AmbientLight from "./AmbientLight"
 import Player from "./Player"
 import Decor from "./Decor"
 import SceneTrack from "./Track"
+import type Fog from "./Fog"
 
 
 export interface ISceneProps extends IPropsWithGUIOptions {
@@ -31,6 +31,7 @@ export interface ISceneProps extends IPropsWithGUIOptions {
 	readonly gltfLoader: GLTFLoader
 	readonly audioPlayer: IAudioPlayer
 	readonly vr: VR
+	readonly fog: Fog
 }
 
 interface ISceneChildren {
@@ -60,16 +61,7 @@ export default class Scene extends SceneNode<ThreeScene> {
 		super(new ThreeScene())
 		this._gui = WithGUI.createAndApply(this, props)
 		this._audioPlayer = props.audioPlayer
-
-		// TODO: Fog creation. Have to redefine as a Scene child
-		const color = 0x000000
-		const near = 25
-		const far = 60
-		this._obj3D.fog = new Fog(color, near, far)
-		const guiFog = this._gui.container.addFolder("Fog")
-		guiFog.add(this._obj3D.fog, "near", 0, 199)
-		guiFog.add(this._obj3D.fog, "far", 0, 200)
-		guiFog.addColor(this._obj3D.fog, "color")
+		this._obj3D.fog = props.fog
 	}
 
 	get camera () { return this._camera }

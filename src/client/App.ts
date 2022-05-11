@@ -22,6 +22,7 @@ import {
 } from "./Components"
 import PostProcessing from "./Components/PostProcessing"
 import Camera from "./Scene/Camera"
+import Fog from "./Scene/Fog"
 
 
 interface IAppProps extends IPropsWithGUIOptions {
@@ -96,6 +97,7 @@ export class App {
       gltfLoader,
       audioPlayer,
       vr,
+      fog: new Fog({name: "Fog", gui: { container: gui }}),
 			gui: { container: gui }
     })
 
