@@ -4,11 +4,11 @@ import {
   Group,
   Mesh,
   MeshBasicMaterial,
-} from "three";
-import { SceneNode } from "../../Templates";
-import type { IBeatmapBlock } from "../../Components";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import * as THREE from "three";
+} from "three"
+import { SceneNode } from "../../Templates"
+import type { IBeatmapBlock } from "../../Components"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
+
 
 export interface ICubeProps {
   readonly x: number;
@@ -73,7 +73,7 @@ export class Cube extends SceneNode<Mesh> {
         )
     );
     const redDirectionalCubeModel = await gltfLoader.loadAsync(
-      "/assets/models/directionalCube.gltf",
+      "/assets/models/redbrick.gltf",
       (progress) =>
         console.log(
           `Scene->Track->"directionalCube": model load progress: ${JSON.stringify(
