@@ -1,6 +1,5 @@
 import {
 	Scene as ThreeScene,
-	Fog,
 	TextureLoader
 } from "three"
 import type { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
@@ -9,7 +8,8 @@ import {
 	WithGUI,
 	IWithGUI,
 	IPropsWithGUIOptions,
-	IAudioPlayer
+	IAudioPlayer,
+	VR
 } from "../Components"
 import { SceneNode } from "../Templates"
 import Camera from "./Camera"
@@ -19,6 +19,7 @@ import AmbientLight from "./AmbientLight"
 import Player from "./Player"
 import Decor from "./Decor"
 import SceneTrack from "./Track"
+import type Fog from "./Fog"
 
 
 export interface ISceneProps extends IPropsWithGUIOptions {
@@ -29,6 +30,8 @@ export interface ISceneProps extends IPropsWithGUIOptions {
 	readonly textureLoader: TextureLoader
 	readonly gltfLoader: GLTFLoader
 	readonly audioPlayer: IAudioPlayer
+	readonly vr: VR
+	readonly fog: Fog
 }
 
 interface ISceneChildren {
@@ -58,28 +61,11 @@ export default class Scene extends SceneNode<ThreeScene> {
 		super(new ThreeScene())
 		this._gui = WithGUI.createAndApply(this, props)
 		this._audioPlayer = props.audioPlayer
-
-		// TODO: Fog creation. Have to redefine as a Scene child
-		const color = 0x000000
-		const near = 25
-		const far = 60
-		this._obj3D.fog = new Fog(color, near, far)
-		const guiFog = this._gui.container.addFolder("Fog")
-		guiFog.add(this._obj3D.fog, "near", 0, 199)
-		guiFog.add(this._obj3D.fog, "far", 0, 200)
-		guiFog.addColor(this._obj3D.fog, "color")
+		this._obj3D.fog = props.fog
 	}
 
 	get camera () { return this._camera }
 	get audioPlayer () { return this._audioPlayer }
-
-	renderingComputation(
-		t: number,
-		dt: number,
-		audioTime: number
-	) {
-		this.childrenRenderingComputations(t, dt, audioTime)
-	}
 
 	private _setChildren(children: ISceneChildren) {
 		if (typeof this._camera === "undefined") {
@@ -102,28 +88,59 @@ export default class Scene extends SceneNode<ThreeScene> {
 		}
 	}
 
+	private _enterVR () {
+		if (this._player) {
+			this._player.enterVR()
+		}
+		setTimeout(() => {
+			this._audioPlayer.play(this._firstTrack?.bmTrack.songUrl)
+		}, 2000)
+	}
+
+	private _leaveVR () {
+		if (this._player) {
+			this._player.leaveVR()
+		}
+		this._audioPlayer.stop()
+	}
+
+	renderingComputation(
+		t: number,
+		dt: number,
+		audioTime: number
+	) {
+		this.childrenRenderingComputations(t, dt, audioTime)
+	}
+
 	static async create (
 		props: ISceneProps
 	): Promise<Scene> {
 		const result: Scene = new Scene(props)
+		props.vr.onVRStarted = result._enterVR.bind(result)
+		props.vr.onVREnded = result._leaveVR.bind(result)
 		const [ camera, ambientLight, grid, axes, player, decor, firstTrack ] = await Promise.all([
 			Camera.create({
 				fov: 55,
 				aspect: props.viewport.initialWidth / Math.max(props.viewport.initialHeight, 1),
 				near: 0.1,
-				far: 200,
+				far: 200
 			}),
 			AmbientLight.create(result._gui.container),
 			Grid.create(result._gui.container),
 			Axes.create(result._gui.container),
-			Player.create(result._gui.container, props.gltfLoader),
+			Player.create({
+				parentGUIContainer: result._gui.container,
+				gltfLoader: props.gltfLoader,
+				vr: props.vr
+			}),
 			Decor.create(result._gui.container, props.gltfLoader),
 			SceneTrack.create("1", result._gui.container, props.gltfLoader)
 		])
 		result._setChildren({ camera, ambientLight, grid, axes, player, decor, firstTrack })
-		result._player!.obj3D.position.y = 1.25
-		console.log(firstTrack)
-		result._audioPlayer.play(firstTrack.bmTrack.songUrl)
+		/*setTimeout(
+			() => result._audioPlayer.play(firstTrack.bmTrack.songUrl),
+			5000
+		)*/
 		return result
 	}
 }

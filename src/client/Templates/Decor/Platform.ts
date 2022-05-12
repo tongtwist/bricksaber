@@ -2,7 +2,10 @@ import {
 	Mesh,
 	Color,
 	MeshBasicMaterial,
-	BoxGeometry
+	BoxGeometry,
+	TextureLoader,
+	RepeatWrapping,
+	MeshStandardMaterial
 } from "three"
 
 import {
@@ -34,6 +37,7 @@ export interface IPlatformProps extends IPropsWithGUIOptions<IPlatformGUIPropert
 	readonly color?: number
 	readonly transparent?: boolean
 	readonly opacity?: number
+	readonly texture?: string
 }
 
 export class Platform extends SceneNode<Mesh> {
@@ -48,21 +52,28 @@ export class Platform extends SceneNode<Mesh> {
 		const initialHeight = props.height ?? 0.05
 		const initialLength = props.length ?? 0.05
 		const color = props.color ?? 0x000000
+		const texture = props.texture ? new TextureLoader().load(props.texture) : null;
+		if (texture) {
+			texture.wrapS = RepeatWrapping;
+			texture.wrapT = RepeatWrapping;
+			texture.offset.set(0, 0);
+			texture.repeat.set(1, 2);
+		}
 		super(new Mesh(
 			new BoxGeometry(initialWidth, initialHeight, initialLength),
-			new MeshBasicMaterial({	// TODO: Si Pb de perf, passer à un type de Material plus light pour le GPU
+			new MeshStandardMaterial({	// TODO: Si Pb de perf, passer à un type de Material plus light pour le GPU
 				color,
-//				side: DoubleSide,	// -> Eviter le DoubleSide si pas utile
+				// side: DoubleSide,	// -> Eviter le DoubleSide si pas utile
 				visible: props.visible ?? true,
 				transparent: props.transparent ?? false,
 				opacity: props.opacity ?? 1,
+				map: texture,
 			})
 		))
 
 		this._initialWidth = initialWidth || 1
 		this._initialHeight = initialHeight || 1
 		this._initialLength = initialLength || 1
-
 		this._color = color
 		this._gui = WithGUI.createAndApply(this, props, {
 			visible: { type: "boolean" },
@@ -74,21 +85,21 @@ export class Platform extends SceneNode<Mesh> {
 		})
 	}
 
-	get visible () { return this._obj3D.visible }
-	set visible (v: boolean) { this._obj3D.visible = v }
-	get width () { return this._obj3D.scale.x * this._initialWidth }
-	set width (x: number) { this._obj3D.scale.x = x / this._initialWidth }
-	get height () { return this._obj3D.scale.y * this._initialHeight }
-	set height (y: number) { this._obj3D.scale.y = y / this._initialHeight }
-	get length () { return this._obj3D.scale.z * this._initialLength }
-	set length (y: number) { this._obj3D.scale.z = y / this._initialLength }
-	get color () { return this._color }
-	set color (c: number) {
+	get visible() { return this._obj3D.visible }
+	set visible(v: boolean) { this._obj3D.visible = v }
+	get width() { return this._obj3D.scale.x * this._initialWidth }
+	set width(x: number) { this._obj3D.scale.x = x / this._initialWidth }
+	get height() { return this._obj3D.scale.y * this._initialHeight }
+	set height(y: number) { this._obj3D.scale.y = y / this._initialHeight }
+	get length() { return this._obj3D.scale.z * this._initialLength }
+	set length(y: number) { this._obj3D.scale.z = y / this._initialLength }
+	get color() { return this._color }
+	set color(c: number) {
 		this._color = Math.max(0, c);
 		(this._obj3D.material as MeshBasicMaterial).color.set(new Color(this._color))
 	}
-	get opacity () { return (this._obj3D.material as MeshBasicMaterial).opacity }
-	set opacity (v: number) {
+	get opacity() { return (this._obj3D.material as MeshBasicMaterial).opacity }
+	set opacity(v: number) {
 		(this._obj3D.material as MeshBasicMaterial).opacity = v
-	}	
+	}
 }

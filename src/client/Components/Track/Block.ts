@@ -46,7 +46,7 @@ export class BeatmapBlock
 	): IBeatmapBlock {
 		return new BeatmapBlock (
 			json._time,
-			json._type,
+			1 - json._type,		// Doit prendre l'inverse de ce qui est enregistré pour avoir les bleus à droite et les rouges à gauche (???)
 			json._lineIndex,
 			json._lineLayer,
 			json._cutDirection

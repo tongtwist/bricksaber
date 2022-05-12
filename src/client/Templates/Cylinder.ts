@@ -4,6 +4,7 @@ import {
   MeshBasicMaterial,
   Color,
   DoubleSide,
+  MeshStandardMaterial,
 } from "three"
 
 import {
@@ -60,7 +61,7 @@ export class Cylinder extends SceneNode<Mesh> {
           side: DoubleSide,
           visible: props.visible ?? true,
           transparent: props.transparent ?? false,
-          opacity: props.opacity ?? 1
+          opacity: props.opacity ?? 1,
         })
       )
     )
