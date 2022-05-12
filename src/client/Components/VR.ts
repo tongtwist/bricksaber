@@ -44,11 +44,6 @@ export class VR {
 		this._rightHand = this._renderer.xr.getControllerGrip(1)
 		this._leftHandTarget = this._renderer.xr.getController(0)
 		this._rightHandTarget = this._renderer.xr.getController(1)
-		//console.log(this._cameras)
-		//console.log(this._leftHand)
-		//console.log(this._rightHand)
-		//console.log(this._leftHandTarget)
-		//console.log(this._rightHandTarget)
 		this.onVRStarted = props.onVRStarted
 		this.onVREnded = props.onVREnded
 		this._renderer.xr.addEventListener("sessionstart", this._onStart.bind(this))

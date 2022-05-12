@@ -67,14 +67,6 @@ export default class Scene extends SceneNode<ThreeScene> {
 	get camera () { return this._camera }
 	get audioPlayer () { return this._audioPlayer }
 
-	renderingComputation(
-		t: number,
-		dt: number,
-		audioTime: number
-	) {
-		this.childrenRenderingComputations(t, dt, audioTime)
-	}
-
 	private _setChildren(children: ISceneChildren) {
 		if (typeof this._camera === "undefined") {
 			this._camera = children.camera
@@ -96,10 +88,32 @@ export default class Scene extends SceneNode<ThreeScene> {
 		}
 	}
 
+	private _enterVR () {
+		if (this._player) {
+			this._player.enterVR()
+		}
+	}
+
+	private _leaveVR () {
+		if (this._player) {
+			this._player.leaveVR()
+		}
+	}
+
+	renderingComputation(
+		t: number,
+		dt: number,
+		audioTime: number
+	) {
+		this.childrenRenderingComputations(t, dt, audioTime)
+	}
+
 	static async create (
 		props: ISceneProps
 	): Promise<Scene> {
 		const result: Scene = new Scene(props)
+		props.vr.onVRStarted = result._enterVR.bind(result)
+		props.vr.onVREnded = result._leaveVR.bind(result)
 		const [ camera, ambientLight, grid, axes, player, decor, firstTrack ] = await Promise.all([
 			Camera.create({
 				fov: 55,
@@ -110,12 +124,15 @@ export default class Scene extends SceneNode<ThreeScene> {
 			AmbientLight.create(result._gui.container),
 			Grid.create(result._gui.container),
 			Axes.create(result._gui.container),
-			Player.create(result._gui.container, props.gltfLoader),
+			Player.create({
+				parentGUIContainer: result._gui.container,
+				gltfLoader: props.gltfLoader,
+				vr: props.vr
+			}),
 			Decor.create(result._gui.container, props.gltfLoader),
 			SceneTrack.create("1", result._gui.container)
 		])
 		result._setChildren({ camera, ambientLight, grid, axes, player, decor, firstTrack })
-		result._player!.obj3D.position.y = 1.25
 		result._audioPlayer.play(firstTrack.bmTrack.songUrl)
 		return result
 	}

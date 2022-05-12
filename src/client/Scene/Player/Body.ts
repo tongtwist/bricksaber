@@ -1,6 +1,7 @@
 import {
   Mesh,
-  Group
+  Group as ThreeGroup,
+  Object3D
 } from "three"
 import type {
   GLTF,
@@ -33,54 +34,31 @@ export interface IPlayerBodyProps
   readonly length?: number
 }
 
-export default class Body extends SceneNode<Group> {
-  private readonly _initialWidth: number
-  private readonly _initialHeight: number
-  private readonly _initialLength: number
+export default class Body extends SceneNode<Object3D> {
   protected readonly _gui: IWithGUI
 
   private constructor(props: IPlayerBodyProps) {
-    super(new Group())
-    this._initialWidth = props.width ?? 1
-    this._initialHeight = props.height ?? 1.5
-    this._initialLength = props.length ?? 1
+    super(new ThreeGroup())
     this._gui = WithGUI.createAndApply(this, props, {
       visible: {type: "boolean"},
-      width: {type: "number", min: 0, max: 5, step: 0.05},
-      height: {type: "number", min: 0.05, max: 1, step: 0.05},
-      length: {type: "number", min: 10, max: 200, step: 0.1},
+      width: {type: "number", min: 0.1, max: 10, step: 0.1},
+      height: {type: "number", min: 0.1, max: 10, step: 0.1},
+      length: {type: "number", min: 0.1, max: 10, step: 0.1},
     })
   }
 
-  private _setChildren(child: Mesh) {
-    this.obj3D.add(child)
+  private _setChildren(child: Object3D) {
+    this._obj3D.add(child)
   }
 
-  get visible() {
-    return this._obj3D.visible
-  }
-  set visible(v: boolean) {
-    this._obj3D.visible = v
-  }
-  get width() {
-    return this._obj3D.scale.x * this._initialWidth
-  }
-  set width(x: number) {
-    this._obj3D.scale.x = x / this._initialWidth
-  }
-  get height() {
-    return this._obj3D.scale.y * this._initialHeight
-  }
-  set height(y: number) {
-    this._obj3D.scale.y = y / this._initialHeight
-  }
-  get length() {
-    return this._obj3D.scale.z * this._initialLength
-  }
-  set length(y: number) {
-    this._obj3D.scale.z = y / this._initialLength
-  }
-
+  get visible() { return this._obj3D.visible }
+  set visible(v: boolean) { this._obj3D.visible = v }
+  get width() { return this._obj3D.scale.x }
+  set width(x: number) { this._obj3D.scale.x = x }
+  get height() { return this._obj3D.scale.y }
+  set height(y: number) { this._obj3D.scale.y = y }
+  get length() { return this._obj3D.scale.z }
+  set length(y: number) { this._obj3D.scale.z = y }
 
   protected async _loadModel(
     gltfLoader: GLTFLoader,
@@ -94,7 +72,9 @@ export default class Body extends SceneNode<Group> {
         )}`
       )
     )
-	const resultat: Mesh = model.scene.children[0].children[0].children[0] as Mesh
+    const resultat: Object3D = model.scene
+    resultat.scale.x *= .6
+    resultat.rotation.y = Math.PI
     this._setChildren(resultat)
   }
 

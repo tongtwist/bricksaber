@@ -1,6 +1,8 @@
 import {
 	Group,
-	Object3D
+	Object3D,
+	Vector3,
+	Euler
 } from "three"
 import type {
 	GLTF,
@@ -44,6 +46,8 @@ export class Saber extends SceneNode<Group> {
 	private readonly _initialLength: number
 	private _manche?: Object3D
 	private _lame?: Object3D
+	private _savedPos?: Vector3
+	private _savedRot?: Euler
 
 	protected constructor (
 		props: ISaberProps
@@ -100,6 +104,34 @@ export class Saber extends SceneNode<Group> {
 			}
 		}
 		this._setChildren(children)
+	}
+
+	enterVR () {
+		this._savedPos = this._obj3D.position.clone()
+		this._savedRot = this._obj3D.rotation.clone()
+		this._obj3D.position.set(0, 0, 0)
+		this._obj3D.rotation.set(-Math.PI / 2, 0, 0)
+		this._obj3D.scale.x = .5
+		this._obj3D.scale.y = .5
+		this._obj3D.scale.z = .5
+	}
+
+	leaveVR () {
+		if (this._savedPos) {
+			this._obj3D.position.set(
+				this._savedPos!.x,
+				this._savedPos!.y,
+				this._savedPos!.z
+			)
+		}
+		if (this._savedRot) {
+			this._savedRot!.x,
+			this._savedRot!.y,
+			this._savedRot!.z
+		}
+		this._obj3D.scale.x = 1
+		this._obj3D.scale.y = 1
+		this._obj3D.scale.z = 1
 	}
 
 	static async create (
