@@ -37,9 +37,7 @@ export default class AnimationLoop {
 	private readonly _clock: THREE.Clock
 	private _timeAccelerator: number = 1
 	private _started: boolean = false
-	private _requestAnimationFrameID: number = 0
-	private _oldTime: number = 0
-	private _oldAudioTime: number = 0
+	private _times: Float64Array
 
 	constructor(props: IAnimationLoopProps) {
 		this._renderer = props.renderer
@@ -52,7 +50,8 @@ export default class AnimationLoop {
 			}
 		})
 		this._clock = new THREE.Clock()
-		this._composer = props.composer;
+		this._composer = props.composer
+		this._times = new Float64Array(5)
 	}
 
 	get renderer(): THREE.WebGLRenderer { return this._renderer }
@@ -64,14 +63,14 @@ export default class AnimationLoop {
 	start() {
 		if (!this._started) {
 			this._renderer.clear()
-			this._animate()
+			this._renderer.setAnimationLoop(this._animate.bind(this))
 			this._started = true
 		}
 	}
 
 	stop() {
 		if (this._started) {
-			cancelAnimationFrame(this._requestAnimationFrameID)
+			this._renderer.setAnimationLoop(null)
 			this._started = false
 		}
 	}
@@ -87,18 +86,30 @@ export default class AnimationLoop {
 		}
 	}
 
-	private _animate() {
-		this._requestAnimationFrameID = requestAnimationFrame(this._animate.bind(this))
-		const newTime = this._clock.getElapsedTime()
-		const dt = (newTime - this._oldTime) * this._timeAccelerator
-		this._oldTime = newTime
-		let audioTime = this._audioPlayer.currentTime
-		if (audioTime === this._oldTime) {
-			audioTime += dt
+	private _computeTimes () {
+		this._times[0] = this._clock.getElapsedTime()
+		this._times[1] = (this._times[0] - this._times[3]) * this._timeAccelerator
+		this._times[3] = this._times[0]
+
+		if (this._audioPlayer.ended) {
+			this._times[2] = 0
 		} else {
-			this._oldAudioTime = audioTime
+			this._times[2] = this._audioPlayer.currentTime
+			if (this._times[2] === this._times[4]) {
+				this._times[2] += this._times[0] - this._times[2]
+			} else {
+				this._times[4] = this._times[2]
+			}
 		}
-		this._scene.renderingComputation(newTime, dt, audioTime)
+	}
+
+	private _animate() {
+		this._computeTimes()
+		this._scene.renderingComputation(
+			this._times[0],
+			this._times[1],
+			this._times[2]
+		)
 		this._stats.update()
 		this.render()
 	}

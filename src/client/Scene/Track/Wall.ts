@@ -43,7 +43,6 @@ export class Wall extends SceneNode<Mesh> {
 	static fromBM (
 		wall: IBeatmapWall
 	): Wall {
-		console.log(wall)
 		return new Wall({
 			vertical: wall.type === 0,
 			pos: wall.lineIndex,

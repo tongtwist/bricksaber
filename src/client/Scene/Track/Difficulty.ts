@@ -10,9 +10,7 @@ import {
 	BeatmapBomb,
 	BeatmapWall
 } from "../../Components"
-import {
-	Group
-} from "../../Templates"
+import { Group } from "../../Templates"
 import {
 	ITrackLayerProps,
 	TrackLayer
@@ -50,13 +48,13 @@ export class TrackDifficulty extends Group {
 		this._gui.apply(this, { visible: { type: "boolean" } })
 	}
 
-	get bm() { return this._bm }
+	get bm () { return this._bm }
 
 	private _timeToZ (
 		t: number,
 		offset: number = 0
 	) {
-		return t * this._bps * 4 + offset - 2
+		return t * this._bps * 16 + offset - 2
 	}
 
 	private _createLayers (): Array<TrackLayer> {
@@ -89,7 +87,7 @@ export class TrackDifficulty extends Group {
 			orderedTimings.forEach((t: number) => {
 				const p: ITrackLayerProps = {
 					name: `Layer:${t}`,
-					z: -(t + this._bm.noteJumpStartBeatOffset) * 4,
+					z: -(t + this._bm.noteJumpStartBeatOffset) * 16,
 					visible: true,
 					walls: [],
 					cubes: [],

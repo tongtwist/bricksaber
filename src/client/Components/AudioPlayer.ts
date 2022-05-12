@@ -2,6 +2,7 @@ export interface IAudioPlayer {
 	source: string
 	volume: number
 	readonly currentTime: number
+	readonly ended: boolean
 	play (source?: string): void
 	pause (): void
 	stop (): void
@@ -22,6 +23,7 @@ export class AudioPlayer
 	get volume (): number { return this._mediaPlayer.volume }
 	set volume (v: number) { this._mediaPlayer.volume = Math.max(0, Math.min(1, v)) }
 	get currentTime (): number { return this._mediaPlayer.currentTime }
+	get ended () { return this._mediaPlayer.ended }
 
 	play (src?: string) {
 		if (src) {

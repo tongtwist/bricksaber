@@ -20,7 +20,7 @@
   "homepage": "https://github.com/tongtwist/bricksaber#readme",
   "devDependencies": {
     "@types/dat.gui": "^0.7.7",
-    "@types/three": "^0.139.0",
+    "@types/three": "^0.140.0",
     "dat.gui": "^0.7.9",
     "three": "^0.140.0",
     "ts-loader": "^9.2.8",
