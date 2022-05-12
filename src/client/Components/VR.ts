@@ -31,6 +31,7 @@ export class VR {
 	private _rightHandTarget: Group
 	private _onVRStarted?: TOnVRStarted
 	private _onVREnded?: TOnVREnded
+	private _vrButton?: HTMLElement
 
 	private constructor (
 		props: IVRProps
@@ -50,6 +51,8 @@ export class VR {
 		this._renderer.xr.addEventListener("sessionend", this._onEnd.bind(this))
 	}
 
+	get vrButton (): HTMLElement | undefined { return this._vrButton }
+	set vrButton (v: HTMLElement | undefined) { this._vrButton = v }
 	get renderer () { return this._renderer }
 	get nowInVR () { return this._renderer.xr.isPresenting }
 	get onVRStarted () { return this._onVRStarted }
@@ -94,7 +97,8 @@ export class VR {
 		props: IVRProps
 	): VR {
 		const res = new VR(props)
-		props.container.appendChild(VRButton.createButton(res.renderer))
+		const vrButton = VRButton.createButton(res.renderer)
+		props.container.appendChild(vrButton)
 		return res
 	}
 }

@@ -92,12 +92,16 @@ export default class Scene extends SceneNode<ThreeScene> {
 		if (this._player) {
 			this._player.enterVR()
 		}
+		setTimeout(() => {
+			this._audioPlayer.play(this._firstTrack?.bmTrack.songUrl)
+		}, 2000)
 	}
 
 	private _leaveVR () {
 		if (this._player) {
 			this._player.leaveVR()
 		}
+		this._audioPlayer.stop()
 	}
 
 	renderingComputation(
@@ -133,7 +137,10 @@ export default class Scene extends SceneNode<ThreeScene> {
 			SceneTrack.create("1", result._gui.container)
 		])
 		result._setChildren({ camera, ambientLight, grid, axes, player, decor, firstTrack })
-		result._audioPlayer.play(firstTrack.bmTrack.songUrl)
+		/*setTimeout(
+			() => result._audioPlayer.play(firstTrack.bmTrack.songUrl),
+			5000
+		)*/
 		return result
 	}
 }

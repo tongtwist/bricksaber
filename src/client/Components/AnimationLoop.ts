@@ -87,6 +87,13 @@ export default class AnimationLoop {
 	}
 
 	private _computeTimes () {
+		/**
+		 * _times[0]: Temps courant de l'objet clock (en secondes)
+		 * _times[1]: Durée écoulée depuis le dernier appel de cette fonction
+		 * _times[2]: Temps courant renvoyé par le player audio
+		 * _times[3]: Ancien temps courant de l'objet clock
+		 * _times[4]: Ancien temps renvoyé par le player audio
+		 */
 		this._times[0] = this._clock.getElapsedTime()
 		this._times[1] = (this._times[0] - this._times[3]) * this._timeAccelerator
 		this._times[3] = this._times[0]
@@ -95,7 +102,7 @@ export default class AnimationLoop {
 			this._times[2] = 0
 		} else {
 			this._times[2] = this._audioPlayer.currentTime
-			if (this._times[2] === this._times[4]) {
+			if (this._times[2] === this._times[4] && this._audioPlayer.playing) {
 				this._times[2] += this._times[0] - this._times[2]
 			} else {
 				this._times[4] = this._times[2]
