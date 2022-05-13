@@ -1,35 +1,15 @@
 import * as THREE from "three";
-import { PositionalAudio } from "three";
+import { IAudioPlayer } from "./AudioPlayer";
 
-export interface IAudioPlayer {
-  //   source: string;
-  volume: number;
-  readonly currentTime: number;
-  readonly ended: boolean;
-  readonly playing: boolean;
-  readonly listener: THREE.AudioListener;
-  load(source: string, onLoad?: () => void): any;
-  play(): void;
-  pause(): void;
-  stop(): void;
-  sound?: PositionalAudio;
-}
-
-export class AudioPlayer implements IAudioPlayer {
+export class PositionalAudioPlayer implements IAudioPlayer {
   private _audioLoader: THREE.AudioLoader;
   private _startTime: number = 0;
 
-  private constructor(private readonly _mediaPlayer: THREE.Audio) {
+  private constructor(private readonly _mediaPlayer: THREE.PositionalAudio) {
     this._audioLoader = new THREE.AudioLoader();
     this._mediaPlayer.autoplay = false;
   }
 
-  //   get source(): string {
-  //     return this._mediaPlayer.src;
-  //   }
-  //   set source(src: string) {
-  //     this._mediaPlayer.src = src;
-  //   }
   get volume(): number {
     return this._mediaPlayer.getVolume();
   }
@@ -37,7 +17,7 @@ export class AudioPlayer implements IAudioPlayer {
     this._mediaPlayer.setVolume(Math.max(0, Math.min(1, v)));
   }
   get currentTime(): number {
-	//   Does not take pause into account
+    //   Does not take pause into account
     const currentTime = this._mediaPlayer.context.currentTime - this._startTime;
     return currentTime;
   }
@@ -51,14 +31,23 @@ export class AudioPlayer implements IAudioPlayer {
   get listener() {
     return this._mediaPlayer.listener;
   }
+  get sound() {
+    return this._mediaPlayer;
+  }
 
   load(src: string) {
-    return this._audioLoader.load(src, (buffer) => {
+    this._audioLoader.load(src, (buffer) => {
       this._mediaPlayer.setBuffer(buffer);
       this._mediaPlayer.setLoop(false);
-    //   this._mediaPlayer.setVolume(0.5);
-      this.play();
+      this._mediaPlayer.setVolume(0.5);
+
+      // this.play();
+      // return this._mediaPlayer;
     });
+  }
+
+  setBuffer(buffer: AudioBuffer) {
+    this._mediaPlayer.setBuffer(buffer);
   }
 
   play() {
@@ -74,13 +63,11 @@ export class AudioPlayer implements IAudioPlayer {
     this._mediaPlayer.stop();
   }
 
-  static create(): AudioPlayer {
+  static create(): PositionalAudioPlayer {
     const listener = new THREE.AudioListener();
-    // camera.add(listener);
+    const sound = new THREE.PositionalAudio(listener);
+    // sound.setRefDistance(0.1);
 
-    // create a global audio source
-    const sound = new THREE.Audio(listener);
-
-    return new AudioPlayer(sound);
+    return new PositionalAudioPlayer(sound);
   }
 }

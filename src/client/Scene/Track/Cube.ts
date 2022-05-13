@@ -1,14 +1,15 @@
 import {
+  AudioLoader,
   BoxBufferGeometry,
   Color,
   Group,
   Mesh,
   MeshBasicMaterial,
-} from "three"
-import { SceneNode } from "../../Templates"
-import type { IBeatmapBlock } from "../../Components"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
-
+} from "three";
+import { SceneNode } from "../../Templates";
+import type { IBeatmapBlock } from "../../Components";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { PositionalAudioPlayer } from "../../Components/PositionalAudioPlayer";
 
 export interface ICubeProps {
   readonly x: number;
@@ -19,6 +20,10 @@ export interface ICubeProps {
 }
 
 export class Cube extends SceneNode<Mesh> {
+  private static _hitsoundBuffer: AudioBuffer = new AudioBuffer({
+    length: 1,
+    sampleRate: 24000,
+  });
   private static _rotations = [
     Math.PI,
     0,
@@ -43,12 +48,25 @@ export class Cube extends SceneNode<Mesh> {
   static redDirectionalCubeModel: Group;
   static blueCenterCubeModel: Group;
   static blueDirectionalCubeModel: Group;
+  private _audioPlayer: PositionalAudioPlayer;
 
   private constructor(props: ICubeProps) {
     super(props.m);
     this._obj3D.position.x = props.x;
     this._obj3D.position.y = props.y;
     this._obj3D.rotation.z = props.rotation;
+    this._audioPlayer = PositionalAudioPlayer.create();
+    this._audioPlayer.setBuffer(Cube._hitsoundBuffer);
+  }
+
+  public static async loadSounds() {
+    // const positionalAudioPlayer = PositionalAudioPlayer.create();
+    const loader = new AudioLoader();
+
+    loader.load("/assets/sounds/hitsound.ogg", (buffer) => {
+      console.log("loaded hitsound")
+      Cube._hitsoundBuffer = buffer;
+    });
   }
 
   public static async _loadModels(gltfLoader: GLTFLoader): Promise<void> {
@@ -152,6 +170,10 @@ export class Cube extends SceneNode<Mesh> {
     }
 
     return this.redDirectionalCubeModel.clone();
+  }
+
+  explode() {
+    this._audioPlayer.play()
   }
 
   static fromBM(block: IBeatmapBlock): Cube {

@@ -49,6 +49,7 @@ export default class Track extends Group {
   ): Promise<Track> {
     const bmTrack = await BMTrack.load(trackName);
     await Cube._loadModels(gltfLoader);
+    await Cube.loadSounds();
     await Mine._loadModel(gltfLoader);
 
     const result = new Track({
