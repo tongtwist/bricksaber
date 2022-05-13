@@ -1,5 +1,9 @@
 import {
-  Group as ThreeGroup
+  Group as ThreeGroup,
+  Mesh,
+  MeshBasicMaterial,
+  SphereBufferGeometry,
+  Raycaster
 } from "three"
 import type { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 import type {
@@ -30,6 +34,8 @@ export default class Player extends Group {
   private _vr: VR
   private _leftHand: ThreeGroup
   private _rightHand: ThreeGroup
+  private _leftRay: Raycaster
+  private _rightRay: Raycaster
   private _lastLeftPos: string
   private _lastHeadPos: string
   private _body?: Body
@@ -49,6 +55,9 @@ export default class Player extends Group {
     this._leftHand.visible = true
     this._rightHand = props.vr.rightHand
     this._rightHand.visible = true
+    this._leftRay = new Raycaster()
+    this._rightRay = new Raycaster()
+    
     this._lastLeftPos = ""
     this._lastHeadPos = ""
   }
@@ -67,7 +76,10 @@ export default class Player extends Group {
       this._leftHand.add(this._leftSaber.obj3D)
       this._rightHand.add(this._rightSaber.obj3D)
       this.add(this._body, this._head)
-      this._obj3D.add(this._leftHand, this._rightHand)
+      this._obj3D.add(
+        this._leftHand,
+        this._rightHand,
+      )
     }
   }
 
@@ -128,6 +140,13 @@ export default class Player extends Group {
     result._leftSaber!.obj3D.rotation.x = -2 * Math.PI / 6
     result._rightSaber!.obj3D.position.x = 0.5
     result._rightSaber!.obj3D.rotation.x = -2 * Math.PI / 6
+    const sphereGeo = new SphereBufferGeometry(.2)
+    const sphereMaterial = new MeshBasicMaterial({
+      color: 0xffff00
+    })
+    const leftTargetMesh = new Mesh(sphereGeo, sphereMaterial)
+    const rightTargetMesh = new Mesh(sphereGeo, sphereMaterial)
+
     return result
   }
 }

@@ -52,7 +52,7 @@ export class TrackDifficulty extends Group {
 		t: number,
 		offset: number = 0
 	) {
-		return t * this._bps * 16 + offset - 2
+		return t * this._bps * 8 + offset - 2
 	}
 
 	private _createLayers (): Array<TrackLayer> {
@@ -85,7 +85,7 @@ export class TrackDifficulty extends Group {
 			orderedTimings.forEach((t: number) => {
 				const p: ITrackLayerProps = {
 					name: `Layer:${t}`,
-					z: -(t + this._bm.noteJumpStartBeatOffset) * 16,
+					z: -(t + this._bm.noteJumpStartBeatOffset) * 8,
 					visible: true,
 					walls: [],
 					cubes: [],

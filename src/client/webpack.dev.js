@@ -10,6 +10,6 @@ module.exports = merge(common, {
 			directory: path.join(__dirname, "../../dist/client")
 		},
 		hot: true,
-		https: true
+		server: "https"
 	}
 });
