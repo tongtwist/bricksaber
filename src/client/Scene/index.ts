@@ -1,6 +1,9 @@
 import {
 	Scene as ThreeScene,
-	TextureLoader
+	TextureLoader,
+	Mesh,
+	SphereBufferGeometry,
+	MeshBasicMaterial
 } from "three"
 import type { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 
@@ -54,6 +57,10 @@ export default class Scene extends SceneNode<ThreeScene> {
 	private _player?: Player
 	private _decor?: Decor
 	private _firstTrack?: SceneTrack
+	red1: Mesh
+	red2: Mesh
+	blue1: Mesh
+	blue2: Mesh
 
 	private constructor(
 		props: ISceneProps
@@ -62,10 +69,19 @@ export default class Scene extends SceneNode<ThreeScene> {
 		this._gui = WithGUI.createAndApply(this, props)
 		this._audioPlayer = props.audioPlayer
 		this._obj3D.fog = props.fog
+		const g = new SphereBufferGeometry(.1, 6, 6)
+		const red = new MeshBasicMaterial({ color: 0xff0000, wireframe: true })
+		const blue = new MeshBasicMaterial({ color: 0x0000ff, wireframe: true})
+		this.red1 = new Mesh(g, red)
+		this.red2 = new Mesh(g, red)
+		this.blue1 = new Mesh(g, blue)
+		this.blue2 = new Mesh(g, blue)
+		this._obj3D.add(this.red1, this.red2, this.blue1, this.blue2)
 	}
 
 	get camera () { return this._camera }
 	get audioPlayer () { return this._audioPlayer }
+	get track () { return this._firstTrack }
 
 	private _setChildren(children: ISceneChildren) {
 		if (typeof this._camera === "undefined") {
@@ -131,7 +147,8 @@ export default class Scene extends SceneNode<ThreeScene> {
 			Player.create({
 				parentGUIContainer: result._gui.container,
 				gltfLoader: props.gltfLoader,
-				vr: props.vr
+				vr: props.vr,
+				scene: result
 			}),
 			Decor.create(result._gui.container, props.gltfLoader),
 			SceneTrack.create("1", result._gui.container, props.gltfLoader)

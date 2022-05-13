@@ -3,7 +3,8 @@ import {
   Mesh,
   MeshBasicMaterial,
   SphereBufferGeometry,
-  Raycaster
+  Raycaster,
+  Vector3
 } from "three"
 import type { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 import type {
@@ -15,12 +16,14 @@ import Body from "./Body"
 import Head from "./Head"
 import LeftSaber from "./LeftSaber"
 import RightSaber from "./RightSaber"
+import type Scene from ".."
 
 
 export interface IPlayerProps {
   readonly parentGUIContainer: GUIContainer
   readonly vr: VR
   readonly gltfLoader: GLTFLoader
+  readonly scene: Scene
 }
 
 interface IPlayerChildren {
@@ -31,11 +34,18 @@ interface IPlayerChildren {
 }
 
 export default class Player extends Group {
+  private _scene: Scene
   private _vr: VR
   private _leftHand: ThreeGroup
   private _rightHand: ThreeGroup
   private _leftRay: Raycaster
+  private _leftOrigin: Vector3
+  private _leftDirection: Vector3
+  private _leftIntersects: Array<any>
   private _rightRay: Raycaster
+  private _rightOrigin: Vector3
+  private _rightDirection: Vector3
+  private _rightIntersects: Array<any>
   private _lastLeftPos: string
   private _lastHeadPos: string
   private _body?: Body
@@ -50,14 +60,20 @@ export default class Player extends Group {
       name: "Player",
       gui: { container: props.parentGUIContainer }
     })
+    this._scene = props.scene
     this._vr = props.vr
     this._leftHand = props.vr.leftHand
     this._leftHand.visible = true
+    this._leftOrigin = new Vector3()
+    this._leftDirection = new Vector3()
+    this._leftIntersects = Array(20)
     this._rightHand = props.vr.rightHand
     this._rightHand.visible = true
-    this._leftRay = new Raycaster()
+    this._rightOrigin = new Vector3()
+    this._rightDirection = new Vector3()
+    this._rightIntersects = Array(20)
+    this._leftRay = new Raycaster(new Vector3(), new Vector3(), .1, 50)
     this._rightRay = new Raycaster()
-    
     this._lastLeftPos = ""
     this._lastHeadPos = ""
   }
@@ -81,6 +97,54 @@ export default class Player extends Group {
         this._rightHand,
       )
     }
+  }
+
+  private _saberIntersections () {
+    const objectsToTest = this._scene.track?.obj3D.children[1].children ?? []
+    if (this._leftSaber) {
+      const saberChildren = this._leftSaber.obj3D.children
+      const lame = saberChildren[0].name === "Lame"
+        ? saberChildren[0]
+        : saberChildren[1]
+      const pointe = lame.children[0].name === "Pointe"
+        ? lame.children[0]
+        : lame.children[1]
+      this._leftDirection.setFromMatrixPosition(pointe.matrixWorld)
+      this._leftOrigin = this._leftHand.position
+      this._scene.red1.position.set(this._leftOrigin.x, this._leftOrigin.y, this._leftOrigin.z)
+      this._scene.red2.position.set(this._leftDirection.x, this._leftDirection.y, this._leftDirection.z)
+      this._leftRay.set(this._leftOrigin, this._leftDirection)
+      //console.log(objectsToTest)
+      /*const intersects = */this._leftRay.intersectObjects(objectsToTest, false, this._leftIntersects)
+      //if (this._leftIntersects.length > 0) {
+        //console.log("Red", Date.now(), this._leftIntersects)
+      //}
+      //console.log(leftDirection)
+      //console.log(leftOrigin, this._leftSaber)
+    }
+    if (this._rightSaber) {
+      const saberChildren = this._rightSaber.obj3D.children
+      const lame = saberChildren[0].name === "Lame"
+        ? saberChildren[0]
+        : saberChildren[1]
+      const pointe = lame.children[0].name === "Pointe"
+        ? lame.children[0]
+        : lame.children[1]
+      this._rightDirection.setFromMatrixPosition(pointe.matrixWorld)
+      this._rightOrigin = this._rightHand.position
+      this._scene.blue1.position.set(this._rightOrigin.x, this._rightOrigin.y, this._rightOrigin.z)
+      this._scene.blue2.position.set(this._rightDirection.x, this._rightDirection.y, this._rightDirection.z)
+      this._rightRay.set(this._rightOrigin, this._rightDirection)
+      /*const intersects = */this._rightRay.intersectObjects(objectsToTest, false, this._rightIntersects)
+      //if (intersects.length > 0) {
+        console.log("Blue", Date.now(), this._rightIntersects)
+      //}
+    }
+    //const rightOrigin: Vector3 = this._rightHand.position.clone()
+  }
+
+  renderingComputation(t: number, dt: number, audioTime: number): void {
+    this._saberIntersections()
   }
 
   enterVR () {
