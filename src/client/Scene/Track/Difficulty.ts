@@ -28,6 +28,8 @@ export interface ITrackDifficultyProps extends IPropsWithGUIOptions<ITrackDiffic
 }
 
 export class TrackDifficulty extends Group {
+  private static _speedRate = 8
+
   private readonly _bps: number
   private readonly _bm: ITrackDifficultyBeatmap
   private readonly _layers: Array<TrackLayer>
@@ -52,7 +54,7 @@ export class TrackDifficulty extends Group {
 		t: number,
 		offset: number = 0
 	) {
-		return t * this._bps * 8 + offset - 2
+		return t * this._bps * TrackDifficulty._speedRate + offset - 2
 	}
 
 	private _createLayers (): Array<TrackLayer> {
@@ -85,7 +87,7 @@ export class TrackDifficulty extends Group {
 			orderedTimings.forEach((t: number) => {
 				const p: ITrackLayerProps = {
 					name: `Layer:${t}`,
-					z: -(t + this._bm.noteJumpStartBeatOffset) * 8,
+					z: -(t + this._bm.noteJumpStartBeatOffset) * TrackDifficulty._speedRate,
 					visible: true,
 					walls: [],
 					cubes: [],
