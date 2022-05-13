@@ -101,6 +101,8 @@ export class App {
 			gui: { container: gui }
     })
 
+    scene.camera?.obj3D.add(audioPlayer.listener)
+
     const stats = Stats()
 
     new OrbitControls(scene.camera!.obj3D, renderer.domElement)
