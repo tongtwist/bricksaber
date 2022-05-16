@@ -6,8 +6,7 @@ import {
 	MeshBasicMaterial,
 	Vector3,
 	DoubleSide,
-	DynamicDrawUsage,
-	SphereBufferGeometry
+	DynamicDrawUsage
 } from "three"
 
 
@@ -91,39 +90,20 @@ export class Trail {
 		this._tempCoords[0][1].set(p2.x, p2.y, p2.z)
 		for (let i = 0; i < this._steps; i++) {
 			const newOffset = i & 1
-			const savedOffset = 1 - newOffset
-			const pos: BufferAttribute
-				= this._faces[i].geometry.attributes["position"] as BufferAttribute
-			this._tempCoords[savedOffset][0].set(
-				pos.getX(4),
-				pos.getY(4),
-				pos.getZ(4)
-			)
-			this._tempCoords[savedOffset][1].set(
-				pos.getX(5),
-				pos.getY(5),
-				pos.getZ(5)
-			)
-			pos.setXYZ(4, pos.getX(3), pos.getY(3), pos.getZ(3))
-			pos.setXYZ(2, pos.getX(0), pos.getY(0), pos.getZ(0))
+			const newCoords: [Vector3, Vector3] = this._tempCoords[newOffset]
+			const savedCoords: [Vector3, Vector3] = this._tempCoords[1 - newOffset]
+			const pos = this._faces[i].geometry.attributes["position"] as BufferAttribute
+			savedCoords[0].set(pos.getX(2), pos.getY(2), pos.getZ(2))
+			savedCoords[1].set(pos.getX(0), pos.getY(0), pos.getZ(0))
+			pos.setXYZ(3, pos.getX(2), pos.getY(2), pos.getZ(2))
+			pos.setXYZ(1, pos.getX(0), pos.getY(0), pos.getZ(0))
 			pos.setXYZ(5, pos.getX(0), pos.getY(0), pos.getZ(0))
-			pos.setXYZ(1,
-				this._tempCoords[newOffset][0].x,
-				this._tempCoords[newOffset][0].y,
-				this._tempCoords[newOffset][0].z
-			)
-			pos.setXYZ(3,
-				this._tempCoords[newOffset][0].x,
-				this._tempCoords[newOffset][0].y,
-				this._tempCoords[newOffset][0].z
-			)
-			pos.setXYZ(0,
-				this._tempCoords[newOffset][1].x,
-				this._tempCoords[newOffset][1].y,
-				this._tempCoords[newOffset][1].z
-			)
+			pos.setXYZ(2, newCoords[0].x, newCoords[0].y, newCoords[0].z)
+			pos.setXYZ(4, newCoords[0].x, newCoords[0].y, newCoords[0].z)
+			pos.setXYZ(0, newCoords[1].x, newCoords[1].y, newCoords[1].z)
 			pos.needsUpdate = true
 		}
-		//console.log(JSON.stringify(this._tempCoords))
+		this._faces[0].geometry.computeBoundingBox()
+		this._faces[0].geometry.computeBoundingSphere()
 	}
 }

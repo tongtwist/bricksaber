@@ -48,6 +48,8 @@ export class Saber extends SceneNode<Group> {
 	private readonly _initialHeight: number
 	private readonly _initialLength: number
 	private readonly _hand: Group
+	private readonly _oldHandPosition: Vector3
+	private readonly _handTranslation: Vector3
 	private _touchSensor?: Intersections
 	private _manche?: Object3D
 	private _lame?: Object3D
@@ -66,6 +68,8 @@ export class Saber extends SceneNode<Group> {
 		this._initialHeight = props.height ?? 1
 		this._initialLength = props.length ?? 1
 		this._hand = props.hand
+		this._oldHandPosition = new Vector3()
+		this._handTranslation = new Vector3()
 		this._pitPosition = new Vector3()
 		this._collidableObjects = []
 		this._collidableChildren = false
@@ -81,6 +85,7 @@ export class Saber extends SceneNode<Group> {
 	get length () { return this._obj3D.scale.z * this._initialLength }
 	set length (y: number) { this._obj3D.scale.z = y / this._initialLength }
 	get handlePosition () { return this._hand.position }
+	get oldHandlePosition () { return this._oldHandPosition }
 	get pitPosition () { return this._pitPosition }
 	get pit () { return this._pit }
 
@@ -94,7 +99,6 @@ export class Saber extends SceneNode<Group> {
 			this._lame = lame
 			this._obj3D.add(this._lame)
 			this._pit = lame.children[0].name === "Pointe" ? lame.children[0] : lame.children[1]
-			//this._pitPosition
 			this._touchSensor = new Intersections({
 				from: this._hand.position,
 				to: this._pitPosition,
@@ -114,8 +118,7 @@ export class Saber extends SceneNode<Group> {
 		url: string,
 		name: string
 	): Promise<void> {
-		const model: GLTF = await gltfLoader.loadAsync(
-			url,
+		const model: GLTF = await gltfLoader.loadAsync(url,
 			(progress) => console.log(`Scene->Player->"${name}": model load progress: ${JSON.stringify(progress)}`)
 		)
 		let child: Object3D | undefined
@@ -147,15 +150,17 @@ export class Saber extends SceneNode<Group> {
 	leaveVR () {
 		if (this._savedPos) {
 			this._obj3D.position.set(
-				this._savedPos!.x,
-				this._savedPos!.y,
-				this._savedPos!.z
+				this._savedPos.x,
+				this._savedPos.y,
+				this._savedPos.z
 			)
 		}
 		if (this._savedRot) {
-			this._savedRot!.x,
-			this._savedRot!.y,
-			this._savedRot!.z
+			this._obj3D.rotation.set(
+				this._savedRot.x,
+				this._savedRot.y,
+				this._savedRot.z
+			)
 		}
 		this._obj3D.scale.x = 1
 		this._obj3D.scale.y = 1
@@ -170,11 +175,24 @@ export class Saber extends SceneNode<Group> {
 		this._collidableChildren = withChildren
 	}
 
+	computePitPosition () {
+		this._handTranslation.copy(this._hand.position)
+		this._handTranslation.sub(this._oldHandPosition)
+		if (this._pit) {
+			this._pit.updateMatrixWorld(true)
+			this._pitPosition.setFromMatrixPosition(this._pit.matrixWorld)
+			this._pitPosition.add(this._handTranslation)
+		}
+	}
+
 	collisions (): Array<Intersection<Object3D>> {
 		if (!this._touchSensor || this._collidableObjects.length === 0) {
 			return []
 		}
-		this._pitPosition.setFromMatrixPosition(this._pit!.matrixWorld)
 		return this._touchSensor.listNew(this._collidableChildren)
+	}
+
+	saveHandPosition() {
+		this._oldHandPosition.copy(this._hand.position)
 	}
 }

@@ -1,8 +1,7 @@
 import {
   Group as ThreeGroup,
   Intersection,
-  Object3D,
-  Vector3
+  Object3D
 } from "three"
 import type { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 import {
@@ -41,10 +40,8 @@ export default class Player extends Group {
   private _body?: Body
   private _head?: Head
   private _leftSaber?: LeftSaber
-  private readonly _leftPitPosition: Vector3
   private readonly _leftTrail: Trail
   private _rightSaber?: RightSaber
-  private readonly _rightPitPosition: Vector3
   private readonly _rightTrail: Trail
 
   private constructor(
@@ -57,12 +54,10 @@ export default class Player extends Group {
     this._scene = props.scene
     this._leftHand = props.vr.leftHand
     this._leftHand.visible = true
-    this._leftPitPosition = new Vector3()
     this._rightHand = props.vr.rightHand
     this._rightHand.visible = true
-    this._rightPitPosition = new Vector3()
-    this._leftTrail = new Trail({ name: "leftTrail", steps: 3, color: 0xff0000 })
-    this._rightTrail = new Trail({ name: "rightTrail", steps: 3, color: 0x0000ff })
+    this._leftTrail = new Trail({ name: "leftTrail", steps: 5, color: 0xff0000 })
+    this._rightTrail = new Trail({ name: "rightTrail", steps: 5, color: 0x0000ff })
     this._obj3D.add(
       this._leftTrail.group,
       this._rightTrail.group
@@ -87,53 +82,45 @@ export default class Player extends Group {
     }
   }
 
-  private _saberIntersections () {
+  renderingComputation(t: number, dt: number, audioTime: number): void {
+    if (this._leftSaber && this._leftSaber.pit) {
+      this._leftSaber.computePitPosition()
+      this._leftTrail.moveForward(
+        this._leftSaber.handlePosition,
+        this._leftSaber.pitPosition
+      )
+      const intersects: Array<Intersection<Object3D>>
+        = this._leftSaber.collisions()
+      /*if (intersects.length > 0) {
+        console.log("Red", intersects)
+      }*/
+      this._leftSaber.saveHandPosition()
+    }
+    if (this._rightSaber && this._rightSaber.pit) {
+      this._rightSaber.computePitPosition()
+      this._rightTrail.moveForward(
+        this._rightSaber.handlePosition,
+        this._rightSaber.pitPosition
+      )
+      const intersects: Array<Intersection<Object3D>>
+        = this._rightSaber.collisions()
+      /*if (intersects.length > 0) {
+        console.log("Blue", intersects)
+      }*/
+      this._rightSaber.saveHandPosition()
+    }
+  }
+
+  enterVR () {
     const objectsToIntersect: Array<Object3D>
       = this._scene.track?.obj3D.children[1].children ?? []
     if (this._leftSaber) {
       this._leftSaber.setCollidables(objectsToIntersect, true)
-      const intersects: Array<Intersection<Object3D>> = this._leftSaber.collisions()
-      /*if (intersects.length > 0) {
-        console.log("Red", intersects)
-      }*/
+      this._leftSaber.enterVR()
     }
     if (this._rightSaber) {
       this._rightSaber.setCollidables(objectsToIntersect, true)
-      const intersects: Array<Intersection<Object3D>> = this._rightSaber.collisions()
-      /*if (intersects.length > 0) {
-        console.log("Blue", intersects)
-      }*/
-    }
-  }
-
-  renderingComputation(t: number, dt: number, audioTime: number): void {
-    if (this._leftSaber && this._leftSaber.pit) {
-      this._leftPitPosition.setFromMatrixPosition(
-        this._leftSaber.pit.matrixWorld
-      )
-      this._leftTrail.moveForward(
-        this._leftSaber.handlePosition,
-        this._leftPitPosition
-      )
-    }
-    if (this._rightSaber && this._rightSaber.pit) {
-      this._rightPitPosition.setFromMatrixPosition(
-        this._rightSaber.pit.matrixWorld
-      )
-      this._rightTrail.moveForward(
-        this._rightSaber.handlePosition,
-        this._rightPitPosition
-      )
-    }
-    this._saberIntersections()
-  }
-
-  enterVR () {
-    if (this._leftSaber) {
-      this._leftSaber!.enterVR()
-    }
-    if (this._rightSaber) {
-      this._rightSaber!.enterVR()
+      this._rightSaber.enterVR()
     }
     if (this._body) {
       this._body.visible = false
