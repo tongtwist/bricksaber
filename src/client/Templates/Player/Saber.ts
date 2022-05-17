@@ -16,7 +16,7 @@ import {
 	IPropsWithGUIOptions,
 	IWithGUI,
 	WithGUI,
-	Intersections
+	CrossFinder
 } from "../../Components"
 import { SceneNode } from "../SceneNode"
 
@@ -50,9 +50,9 @@ export class Saber extends SceneNode<Group> {
 	private readonly _hand: Group
 	private readonly _oldHandPosition: Vector3
 	private readonly _handTranslation: Vector3
-	private _touchSensor?: Intersections
+	private _bladeSensor?: CrossFinder
 	private _manche?: Object3D
-	private _lame?: Object3D
+	private _blade?: Object3D
 	private _pit?: Object3D
 	private readonly _pitPosition: Vector3
 	private _savedPos?: Vector3
@@ -94,12 +94,12 @@ export class Saber extends SceneNode<Group> {
 			this._manche = children.manche
 			this._obj3D.add(this._manche)
 		}
-		if (typeof this._lame === "undefined" && children.lame) {
+		if (typeof this._blade === "undefined" && children.lame) {
 			const lame = children.lame
-			this._lame = lame
-			this._obj3D.add(this._lame)
+			this._blade = lame
+			this._obj3D.add(this._blade)
 			this._pit = lame.children[0].name === "Pointe" ? lame.children[0] : lame.children[1]
-			this._touchSensor = new Intersections({
+			this._bladeSensor = new CrossFinder({
 				from: this._hand.position,
 				to: this._pitPosition,
 				near: 0,
@@ -168,8 +168,8 @@ export class Saber extends SceneNode<Group> {
 	}
 
 	setCollidables (objects: Array<Object3D>, withChildren: boolean = false) {
-		if (this._touchSensor) {
-			this._touchSensor.objectsToTest = objects
+		if (this._bladeSensor) {
+			this._bladeSensor.objectsToTest = objects
 		}
 		this._collidableObjects = objects
 		this._collidableChildren = withChildren
@@ -186,10 +186,10 @@ export class Saber extends SceneNode<Group> {
 	}
 
 	collisions (): Array<Intersection<Object3D>> {
-		if (!this._touchSensor || this._collidableObjects.length === 0) {
+		if (!this._bladeSensor || this._collidableObjects.length === 0) {
 			return []
 		}
-		return this._touchSensor.listNew(this._collidableChildren)
+		return this._bladeSensor.listNew(this._collidableChildren)
 	}
 
 	saveHandPosition() {

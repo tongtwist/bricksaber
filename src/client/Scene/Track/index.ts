@@ -28,7 +28,7 @@ export default class Track extends Group {
   private constructor(props: ITrackProps) {
     super({
       ...props,
-      visible: /*props.visible ??*/ false,
+      visible: props.visible ?? false,
     })
     this._bmTrack = props.bmTrack
     this._difficulties = {}

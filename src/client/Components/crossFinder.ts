@@ -6,7 +6,7 @@ import {
 } from "three"
 
 
-export interface IIntersectionsProps {
+export interface ICrossFinderProps {
 	readonly from: Vector3
 	readonly to: Vector3
 	readonly near: number
@@ -15,7 +15,7 @@ export interface IIntersectionsProps {
 	readonly testChildren?: boolean
 }
 
-export class Intersections {
+export class CrossFinder {
 	private readonly _from: Vector3
 	private readonly _to: Vector3
 	private readonly _direction: Vector3
@@ -25,7 +25,7 @@ export class Intersections {
 	private readonly _alreadyIntersected: Set<number>
 
 	constructor (
-		props: IIntersectionsProps
+		props: ICrossFinderProps
 	) {
 		this._from = props.from
 		this._to = props.to
@@ -44,13 +44,14 @@ export class Intersections {
 	get objectsToTest () { return this._objectsToTest }
 	set objectsToTest (v: Array<Object3D>) {
 		this._objectsToTest = v ?? []
+		this.forgetAlreadyIntersected()
 	}
 
 	forgetAlreadyIntersected () {
 		this._alreadyIntersected.clear()
 	}
 
-	list (testChildren?: boolean): Array<Intersection<Object3D>> {
+	private _list (testChildren?: boolean): Array<Intersection<Object3D>> {
 		if (this._objectsToTest.length > 0) {
 			this._direction.subVectors(this._to, this._from)
 			this._direction.normalize()
@@ -64,12 +65,13 @@ export class Intersections {
 	}
 
 	listNew (
-		testChildren?: boolean
+		testChildren?: boolean,
+		maxDistance: number = -1
 	): Array<Intersection<Object3D>> {
-		const intersections: Array<Intersection<Object3D>> = this.list(testChildren)
+		const intersections: Array<Intersection<Object3D>> = this._list(testChildren)
 		const result: Array<Intersection<Object3D>> = []
 		for (const i of intersections) {
-			if (!this._alreadyIntersected.has(i.object.id)) {
+			if (!this._alreadyIntersected.has(i.object.id) && (maxDistance < 0 || i.distance <= maxDistance)) {
 				this._alreadyIntersected.add(i.object.id)
 				result.push(i)
 			}
