@@ -66,6 +66,7 @@ export default class Scene extends SceneNode<ThreeScene> {
 
 	get camera () { return this._camera }
 	get audioPlayer () { return this._audioPlayer }
+	get track () { return this._firstTrack }
 
 	private _setChildren(children: ISceneChildren) {
 		if (typeof this._camera === "undefined") {
@@ -131,16 +132,13 @@ export default class Scene extends SceneNode<ThreeScene> {
 			Player.create({
 				parentGUIContainer: result._gui.container,
 				gltfLoader: props.gltfLoader,
-				vr: props.vr
+				vr: props.vr,
+				scene: result
 			}),
 			Decor.create(result._gui.container, props.gltfLoader),
 			SceneTrack.create("1", result._gui.container, props.gltfLoader)
 		])
 		result._setChildren({ camera, ambientLight, grid, axes, player, decor, firstTrack })
-		/*setTimeout(
-			() => result._audioPlayer.play(firstTrack.bmTrack.songUrl),
-			5000
-		)*/
 		return result
 	}
 }

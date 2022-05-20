@@ -27,8 +27,6 @@ export class VR {
 	private _vrStateSince: number
 	private _leftHand: Group
 	private _rightHand: Group
-	private _leftHandTarget: Group
-	private _rightHandTarget: Group
 	private _onVRStarted?: TOnVRStarted
 	private _onVREnded?: TOnVREnded
 	private _vrButton?: HTMLElement
@@ -43,8 +41,6 @@ export class VR {
 		this._cameras = (((this._renderer.xr.getCamera) as unknown) as () => ArrayCamera | PerspectiveCamera)()
 		this._leftHand = this._renderer.xr.getControllerGrip(0)
 		this._rightHand = this._renderer.xr.getControllerGrip(1)
-		this._leftHandTarget = this._renderer.xr.getController(0)
-		this._rightHandTarget = this._renderer.xr.getController(1)
 		this.onVRStarted = props.onVRStarted
 		this.onVREnded = props.onVREnded
 		this._renderer.xr.addEventListener("sessionstart", this._onStart.bind(this))
@@ -56,13 +52,9 @@ export class VR {
 	get renderer () { return this._renderer }
 	get nowInVR () { return this._renderer.xr.isPresenting }
 	get onVRStarted () { return this._onVRStarted }
-	set onVRStarted (v: TOnVRStarted | undefined) {
-		this._onVRStarted = v
-	}
+	set onVRStarted (v: TOnVRStarted | undefined) { this._onVRStarted = v }
 	get onVREnded () { return this._onVREnded }
-	set onVREnded (v: TOnVREnded | undefined) {
-		this._onVREnded = v
-	}
+	set onVREnded (v: TOnVREnded | undefined) { this._onVREnded = v }
 	get cameras () {
 		if (this._lastCameraUpdateAt < this._vrStateSince) {
 			this._cameraUpdate()
@@ -71,12 +63,14 @@ export class VR {
 	}
 	get leftHand () { return this._leftHand }
 	get rightHand () { return this._rightHand }
-	get leftTarget () { return this._leftHandTarget }
-	get rightTarget () { return this._rightHandTarget }
 
 	private _cameraUpdate(): void {
 		this._lastCameraUpdateAt = Date.now()
-		this._cameras = (((this._renderer.xr.getCamera) as unknown) as () => ArrayCamera | PerspectiveCamera)()
+		this._cameras = (
+			(
+				(this._renderer.xr.getCamera) as unknown
+			) as () => ArrayCamera | PerspectiveCamera
+		)()
 	}
 	
 	private _onStart (
