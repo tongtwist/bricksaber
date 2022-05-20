@@ -29,10 +29,10 @@ export default class Track extends Group {
     super({
       ...props,
       visible: props.visible ?? false,
-    });
-    this._bmTrack = props.bmTrack;
-    this._difficulties = {};
-    this._gui.apply(this, { visible: { type: "boolean" } });
+    })
+    this._bmTrack = props.bmTrack
+    this._difficulties = {}
+    this._gui.apply(this, { visible: { type: "boolean" } })
   }
 
   get bmTrack() {

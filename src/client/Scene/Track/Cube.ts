@@ -44,10 +44,10 @@ export class Cube extends SceneNode<Mesh> {
     Cube._cubeGeometry,
     new MeshBasicMaterial({ color: 0xff0000 })
   );
-  static redCenterCubeModel: Group;
-  static redDirectionalCubeModel: Group;
-  static blueCenterCubeModel: Group;
-  static blueDirectionalCubeModel: Group;
+  static redCenterCubeModel: Mesh;
+  static redDirectionalCubeModel: Mesh;
+  static blueCenterCubeModel: Mesh;
+  static blueDirectionalCubeModel: Mesh;
   private _audioPlayer: PositionalAudioPlayer;
 
   private constructor(props: ICubeProps) {
@@ -72,7 +72,7 @@ export class Cube extends SceneNode<Mesh> {
   public static async _loadModels(gltfLoader: GLTFLoader): Promise<void> {
     const redColor = new Color(0xff0000);
     const blueColor = new Color(0x0000ff);
-    const redCenterCubeModel = await gltfLoader.loadAsync(
+    const redCenterCubeModel = Cube._rm/*await gltfLoader.loadAsync(
       "/assets/models/centerCube.gltf",
       (progress) =>
         console.log(
@@ -80,8 +80,8 @@ export class Cube extends SceneNode<Mesh> {
             progress
           )}`
         )
-    );
-    const blueCenterCubeModel = await gltfLoader.loadAsync(
+    );*/
+    const blueCenterCubeModel = Cube._bm/*await gltfLoader.loadAsync(
       "/assets/models/centerCube.gltf",
       (progress) =>
         console.log(
@@ -89,8 +89,8 @@ export class Cube extends SceneNode<Mesh> {
             progress
           )}`
         )
-    );
-    const redDirectionalCubeModel = await gltfLoader.loadAsync(
+    );*/
+    const redDirectionalCubeModel = Cube._rm/*await gltfLoader.loadAsync(
       "/assets/models/redbrick.gltf",
       (progress) =>
         console.log(
@@ -98,8 +98,8 @@ export class Cube extends SceneNode<Mesh> {
             progress
           )}`
         )
-    );
-    const blueDirectionalCubeModel = await gltfLoader.loadAsync(
+    );*/
+    const blueDirectionalCubeModel = Cube._bm/*await gltfLoader.loadAsync(
       "/assets/models/directionalCube.gltf",
       (progress) =>
         console.log(
@@ -107,11 +107,11 @@ export class Cube extends SceneNode<Mesh> {
             progress
           )}`
         )
-    );
-    redCenterCubeModel.scene.scale.set(0.3, 0.3, 0.3);
-    redDirectionalCubeModel.scene.scale.set(0.3, 0.3, 0.3);
-    blueCenterCubeModel.scene.scale.set(0.3, 0.3, 0.3);
-    blueDirectionalCubeModel.scene.scale.set(0.3, 0.3, 0.3);
+    );*/
+    //redCenterCubeModel.scene.scale.set(0.3, 0.3, 0.3);
+    //redDirectionalCubeModel.scene.scale.set(0.3, 0.3, 0.3);
+    //blueCenterCubeModel.scene.scale.set(0.3, 0.3, 0.3);
+    //blueDirectionalCubeModel.scene.scale.set(0.3, 0.3, 0.3);
 
     // const light = new THREE.PointLight(0xffffff, 1, 4);
     // redCenterCubeModel.scene.add(light.clone());
@@ -119,41 +119,41 @@ export class Cube extends SceneNode<Mesh> {
     // blueCenterCubeModel.scene.add(light.clone());
     // blueDirectionalCubeModel.scene.add(light.clone());
 
-    this.redCenterCubeModel = redCenterCubeModel.scene;
-    this.redCenterCubeModel.traverse((object) => {
+    this.redCenterCubeModel = redCenterCubeModel/*.scene*/;
+    /*this.redCenterCubeModel.traverse((object) => {
       if (object.type === "Mesh") {
         //@ts-ignore
         const material = object.material;
         material.color = redColor;
       }
-    });
+    });*/
 
-    this.redDirectionalCubeModel = redDirectionalCubeModel.scene;
-    this.redDirectionalCubeModel.traverse((object) => {
+    this.redDirectionalCubeModel = redDirectionalCubeModel//.scene;
+    /*this.redDirectionalCubeModel.traverse((object) => {
       if (object.type === "Mesh") {
         //@ts-ignore
         const material = object.material;
         material.color = redColor;
       }
-    });
+    });*/
 
-    this.blueCenterCubeModel = blueCenterCubeModel.scene;
-    this.blueCenterCubeModel.traverse((object) => {
+    this.blueCenterCubeModel = blueCenterCubeModel//.scene;
+    /*this.blueCenterCubeModel.traverse((object) => {
       if (object.type === "Mesh") {
         //@ts-ignore
         const material = object.material;
         material.color = blueColor;
       }
-    });
+    });*/
 
-    this.blueDirectionalCubeModel = blueDirectionalCubeModel.scene;
-    this.blueDirectionalCubeModel.traverse((object) => {
+    this.blueDirectionalCubeModel = blueDirectionalCubeModel//.scene;
+    /*this.blueDirectionalCubeModel.traverse((object) => {
       if (object.type === "Mesh") {
         //@ts-ignore
         const material = object.material;
         material.color = blueColor;
       }
-    });
+    });*/
   }
 
   static getModel(cutDirection: number, type: number) {
