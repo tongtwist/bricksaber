@@ -48,6 +48,10 @@ export class Mine extends SceneNode<Mesh> {
     return this.model.clone()
   }
 
+  explode() {
+    console.log("bomb should boom")
+  }
+
   static fromBM(block: IBeatmapBlock): Mine {
     return new Mine({
       x: block.lineIndex - 1.5,

@@ -1,4 +1,10 @@
-import { WebGLRenderer, TextureLoader, sRGBEncoding, Group, AudioLoader } from "three";
+import {
+  WebGLRenderer,
+  TextureLoader,
+  sRGBEncoding,
+  Group,
+  AudioLoader,
+} from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { GUI } from "dat.gui";
@@ -134,6 +140,12 @@ export class App {
 
     container.appendChild(renderer.domElement);
     container.appendChild(stats.dom);
+
+    const objet = scene.getObjectById(533)
+    const bomb = scene.getObjectById(752)
+    console.log(objet, bomb)
+
+    // console.log(scene.)
 
     window.addEventListener("resize", res._onWindowResize.bind(res), false);
     return res;

@@ -57,6 +57,7 @@ export class Cube extends SceneNode<Mesh> {
     this._obj3D.rotation.z = props.rotation;
     this._audioPlayer = PositionalAudioPlayer.create();
     this._audioPlayer.setBuffer(Cube._hitsoundBuffer);
+    this.obj3D.add(this._audioPlayer.sound)
   }
 
   public static async loadSounds() {

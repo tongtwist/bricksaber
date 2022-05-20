@@ -56,7 +56,7 @@ export class AudioPlayer implements IAudioPlayer {
     return this._audioLoader.load(src, (buffer) => {
       this._mediaPlayer.setBuffer(buffer);
       this._mediaPlayer.setLoop(false);
-    //   this._mediaPlayer.setVolume(0.5);
+      this._mediaPlayer.setVolume(0.1);
       this.play();
     });
   }

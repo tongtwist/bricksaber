@@ -58,18 +58,15 @@ export default class Scene extends SceneNode<ThreeScene> {
     this._obj3D.fog = props.fog;
   }
 
-<<<<<<< HEAD
   get camera() {
     return this._camera;
   }
   get audioPlayer() {
     return this._audioPlayer;
   }
-=======
-	get camera () { return this._camera }
-	get audioPlayer () { return this._audioPlayer }
-	get track () { return this._firstTrack }
->>>>>>> origin/collisions
+  get track() {
+    return this._firstTrack;
+  }
 
   private _setChildren(children: ISceneChildren) {
     if (typeof this._camera === "undefined") {
@@ -115,32 +112,81 @@ export default class Scene extends SceneNode<ThreeScene> {
     this.childrenRenderingComputations(t, dt, audioTime);
   }
 
-	static async create (
-		props: ISceneProps
-	): Promise<Scene> {
-		const result: Scene = new Scene(props)
-		props.vr.onVRStarted = result._enterVR.bind(result)
-		props.vr.onVREnded = result._leaveVR.bind(result)
-		const [ camera, ambientLight, grid, axes, player, decor, firstTrack ] = await Promise.all([
-			Camera.create({
-				fov: 55,
-				aspect: props.viewport.initialWidth / Math.max(props.viewport.initialHeight, 1),
-				near: 0.1,
-				far: 200
-			}),
-			AmbientLight.create(result._gui.container),
-			Grid.create(result._gui.container),
-			Axes.create(result._gui.container),
-			Player.create({
-				parentGUIContainer: result._gui.container,
-				gltfLoader: props.gltfLoader,
-				vr: props.vr,
-				scene: result
-			}),
-			Decor.create(result._gui.container, props.gltfLoader),
-			SceneTrack.create("1", result._gui.container, props.gltfLoader)
-		])
-		result._setChildren({ camera, ambientLight, grid, axes, player, decor, firstTrack })
-		return result
-	}
+  getObjectById(id: number) {
+    console.log(this._children);
+    // console.log(this._children.flat(1000));
+    return getObjectByIdInArrayOrChildren(this._children, id);
+  }
+
+  static async create(props: ISceneProps): Promise<Scene> {
+    const result: Scene = new Scene(props);
+    props.vr.onVRStarted = result._enterVR.bind(result);
+    props.vr.onVREnded = result._leaveVR.bind(result);
+    const [camera, ambientLight, grid, axes, player, decor, firstTrack] =
+      await Promise.all([
+        Camera.create({
+          fov: 55,
+          aspect:
+            props.viewport.initialWidth /
+            Math.max(props.viewport.initialHeight, 1),
+          near: 0.1,
+          far: 200,
+        }),
+        AmbientLight.create(result._gui.container),
+        Grid.create(result._gui.container),
+        Axes.create(result._gui.container),
+        Player.create({
+          parentGUIContainer: result._gui.container,
+          gltfLoader: props.gltfLoader,
+          vr: props.vr,
+          scene: result,
+        }),
+        Decor.create(result._gui.container, props.gltfLoader),
+        SceneTrack.create("1", result._gui.container, props.gltfLoader),
+      ]);
+    result._setChildren({
+      camera,
+      ambientLight,
+      grid,
+      axes,
+      player,
+      decor,
+      firstTrack,
+    });
+    return result;
+  }
 }
+
+const getObjectByIdInArrayOrChildren = (
+  array: Array<any>,
+  id: number
+): SceneNode<any> => {
+  // console.log("initial array", array)
+  let result: any = undefined;
+
+  array.forEach((child) => {
+    if (result) {
+      return;
+    }
+
+    if (child.obj3D.id === id) {
+      result = child;
+      return;
+    }
+
+    // Does not work with mines, they don't have ._children
+    if (child._children) {
+      result = getObjectByIdInArrayOrChildren(child._children, id);
+      return;
+    }
+
+    // Tried to fix it this way, did not work
+
+    // if (child.obj3D.children) {
+    //   result = getObjectByIdInArrayOrChildren(child.obj3D.children, id);
+    //   return;
+    // }
+  });
+
+  return result;
+};
